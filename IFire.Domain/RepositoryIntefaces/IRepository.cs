@@ -4,7 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace IFire.Domain.IRepository {
+namespace IFire.Domain.RepositoryIntefaces {
 
     public interface IRepository<TEntity, TPrimaryKey> where TEntity : class {
 

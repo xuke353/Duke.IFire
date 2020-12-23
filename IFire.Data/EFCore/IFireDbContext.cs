@@ -3,6 +3,8 @@
 namespace IFire.Data.EFCore {
 
     public class IFireDbContext : DbContext {
-        public IFireDbContext(DbContextOptions<IFireDbContext> options) : base(options) { }
+
+        public IFireDbContext(DbContextOptions<IFireDbContext> options) : base(options) {
+        }
     }
 }

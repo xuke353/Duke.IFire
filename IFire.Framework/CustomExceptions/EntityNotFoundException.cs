@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace IFire.Framework.CustomExceptions {
+
     public class EntityNotFoundException : Exception {
         public Type EntityType { get; set; }
 

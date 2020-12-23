@@ -5,7 +5,7 @@ using IFire.Framework.Attributes;
 using IFire.Framework.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace IFire.Framework.ServiceCollectionExtensions {
+namespace IFire.Framework.Extensions {
 
     public static class DIExtension {
 
@@ -28,7 +28,6 @@ namespace IFire.Framework.ServiceCollectionExtensions {
             }
             return services;
         }
-
 
         /// <summary>
         /// 从指定程序集中注入服务

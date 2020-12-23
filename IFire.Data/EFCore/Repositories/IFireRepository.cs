@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using IFire.Domain.IRepository;
+using IFire.Domain.RepositoryIntefaces;
 using IFire.Framework.CustomExceptions;
 using IFire.Framework.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -246,5 +246,4 @@ namespace IFire.Data.EFCore.Repositories {
             })?.Entity as TEntity;
         }
     }
-
 }

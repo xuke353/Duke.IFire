@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace IFire.Framework.Helpers {
+
     public class Check {
+
         /// <summary>
         /// 检测对象是否为空
         /// </summary>

@@ -1,6 +1,6 @@
 ﻿using IFire.Data.EFCore.Repositories;
-using IFire.Domain.IRepository;
-using IFire.Framework.ServiceCollectionExtensions;
+using IFire.Domain.RepositoryIntefaces;
+using IFire.Framework.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
