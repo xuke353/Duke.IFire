@@ -1,12 +1,21 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
     <Folder Include="EFCore\Uow\" />
     <Folder Include="EFCore\Seed\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="5.0.0-alpha.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\IFire.Domain\IFire.Domain.csproj" />
+    <ProjectReference Include="..\IFire.Framework\IFire.Framework.csproj" />
   </ItemGroup>
 
 </Project>

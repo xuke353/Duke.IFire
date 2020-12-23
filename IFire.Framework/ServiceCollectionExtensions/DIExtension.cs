@@ -10,40 +10,25 @@ namespace IFire.Framework.ServiceCollectionExtensions {
     public static class DIExtension {
 
         /// <summary>
-        /// 添加应用服务
+        /// 注册按约定命名的接口类
         /// </summary>
-        private static void AddApplicationServices(this IServiceCollection services, IModuleDescriptor module) {
-            if (module.AssemblyDescriptor == null)
-                return;
-
-            var types = module.AssemblyDescriptor.Application.GetTypes();
-            var interfaces = types.Where(t => t.FullName != null && t.IsInterface && t.FullName.EndsWith("Service", StringComparison.OrdinalIgnoreCase));
+        /// <param name="services"></param>
+        /// <param name="assembly">程序集</param>
+        /// <param name="fullNameEnd">特定字符串结尾</param>
+        public static IServiceCollection AddImplementedInterfaceServices(this IServiceCollection services, string assemblyName, string endTypeName) {
+            Check.NotNull(assemblyName, nameof(assemblyName), "注册失败，未找到程序集");
+            var assembly = AssemblyHelper.LoadByNameEndString(assemblyName);
+            var types = assembly.GetTypes();
+            var interfaces = types.Where(t => t.FullName != null && t.IsInterface && t.FullName.EndsWith(endTypeName, StringComparison.OrdinalIgnoreCase));
             foreach (var serviceType in interfaces) {
                 var implementationType = types.FirstOrDefault(m => m != serviceType && serviceType.IsAssignableFrom(m));
                 if (implementationType != null) {
-                    services.Add(new ServiceDescriptor(serviceType, implementationType, ServiceLifetime.Singleton));
+                    services.Add(new ServiceDescriptor(serviceType, implementationType, ServiceLifetime.Transient));
                 }
             }
+            return services;
         }
 
-        /// <summary>
-        /// 添加仓储
-        /// </summary>
-        private static void AddRepositories(this IServiceCollection services, IModuleDescriptor module, IDbContext dbContext, DbOptions dbOptions) {
-            var interfaceList = module.AssemblyDescriptor.Domain.GetTypes().Where(t => t.IsInterface && typeof(IRepository<>).IsImplementType(t)).ToList();
-
-            if (!interfaceList.Any())
-                return;
-
-            //根据仓储的命名空间名称来注入不同数据库的仓储
-            var entityNamespacePrefix = $"{module.AssemblyDescriptor.Infrastructure.GetName().Name}.Repositories.{dbOptions.Dialect}.";
-            foreach (var serviceType in interfaceList) {
-                var implementType = module.AssemblyDescriptor.Infrastructure.GetTypes().FirstOrDefault(m => m.FullName.NotNull() && m.FullName.StartsWith(entityNamespacePrefix) && serviceType.IsAssignableFrom(m));
-                if (implementType != null) {
-                    services.AddSingleton(serviceType, Activator.CreateInstance(implementType, dbContext));
-                }
-            }
-        }
 
         /// <summary>
         /// 从指定程序集中注入服务
@@ -132,7 +117,7 @@ namespace IFire.Framework.ServiceCollectionExtensions {
         /// </summary>
         /// <param name="services"></param>
         /// <returns></returns>
-        public static IServiceCollection AddNetModularServices(this IServiceCollection services) {
+        public static IServiceCollection AddWithAttributeServices(this IServiceCollection services) {
             var assemblies = AssemblyHelper.Load();
             foreach (var assembly in assemblies) {
                 services.AddServicesFromAssembly(assembly);

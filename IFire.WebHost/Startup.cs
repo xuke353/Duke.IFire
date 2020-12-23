@@ -1,4 +1,6 @@
-﻿using IFire.Framework.ServiceCollectionExtensions;
+﻿using IFire.Data.EFCore.Repositories;
+using IFire.Domain.IRepository;
+using IFire.Framework.ServiceCollectionExtensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -17,7 +19,10 @@ namespace IFire.WebHost {
         public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services) {
-            services.AddNetModularServices();
+            services.AddWithAttributeServices()
+                    .AddImplementedInterfaceServices("IFire.Application", "Service")
+                    .AddImplementedInterfaceServices("IFire.Domain", "Manage")
+                    .AddTransient(typeof(IRepository<,>), typeof(IFireRepository<,>));
             services.AddControllers();
             services.AddSwaggerGen(c => {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "IFire.WebHost", Version = "v1" });

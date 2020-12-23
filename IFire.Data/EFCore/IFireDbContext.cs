@@ -1,5 +1,8 @@
-﻿namespace IFire.Data.EFCore {
+﻿using Microsoft.EntityFrameworkCore;
 
-    internal class IFireDbContext {
+namespace IFire.Data.EFCore {
+
+    public class IFireDbContext : DbContext {
+        public IFireDbContext(DbContextOptions<IFireDbContext> options) : base(options) { }
     }
 }
