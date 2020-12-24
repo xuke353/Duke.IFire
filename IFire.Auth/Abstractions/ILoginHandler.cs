@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using IFire.Auth.Jwt;
+using IFire.Framework.Result;
 
 namespace IFire.Auth.Abstractions {
 
@@ -19,6 +20,6 @@ namespace IFire.Auth.Abstractions {
         /// <param name="claims">信息</param>
         /// <param name="extendData">扩展数据</param>
         /// <returns></returns>
-        JwtTokenModel Hand(List<Claim> claims, string extendData);
+        IResultModel Hand(List<Claim> claims, string extendData);
     }
 }
