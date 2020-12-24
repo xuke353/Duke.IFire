@@ -1,31 +1,49 @@
-﻿using IFire.Data.EFCore.Repositories;
+﻿using System;
+using IFire.Auth.Jwt;
+using IFire.Data.EFCore;
+using IFire.Data.EFCore.Repositories;
 using IFire.Domain.RepositoryIntefaces;
 using IFire.Framework.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 
 namespace IFire.WebHost {
 
     public class Startup {
-
-        public Startup(IConfiguration configuration) {
-            Configuration = configuration;
-        }
-
+        public static readonly ILoggerFactory EFLoggerFactory = LoggerFactory.Create(builder => { builder.AddSystemdConsole(); });
+        public IWebHostEnvironment Environment { get; }
         public IConfiguration Configuration { get; }
 
+        public Startup(IWebHostEnvironment environment, IConfiguration configuration) {
+            Configuration = configuration;
+            Environment = environment;
+            DbOptions.InitConfiguration(configuration);
+        }
+
         public void ConfigureServices(IServiceCollection services) {
-            services.AddWithAttributeServices()
-                    .AddImplementedInterfaceServices("IFire.Application", "Service")
-                    .AddImplementedInterfaceServices("IFire.Domain", "Manage")
-                    .AddTransient(typeof(IRepository<,>), typeof(IFireRepository<,>));
+            services.AddWithAttributeServices();
+            services.AddImplementedInterfaceServices("IFire.Application", "Service");
+            services.AddImplementedInterfaceServices("IFire.Domain", "Manage");
+            services.AddTransient(typeof(IRepository<,>), typeof(IFireRepository<,>));
+            services.AddJwtAuth();
             services.AddControllers();
             services.AddSwaggerGen(c => {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "IFire.WebHost", Version = "v1" });
+            });
+
+            services.AddDbContext<IFireDbContext>(option => {
+                option.UseMySql(DbOptions.ConnectionString, new MySqlServerVersion(new Version(DbOptions.Version)));
+                if (Environment.IsDevelopment()) {
+                    //打印sql
+                    option.UseLoggerFactory(EFLoggerFactory);
+                    option.EnableSensitiveDataLogging(true);//显示sql参数
+                }
             });
         }
 
@@ -38,6 +56,9 @@ namespace IFire.WebHost {
 
             app.UseRouting();
 
+            //认证
+            app.UseAuthentication();
+            //授权
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => {

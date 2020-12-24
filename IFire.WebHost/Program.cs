@@ -4,18 +4,24 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Serilog;
+using IFire.Framework.Extensions;
 
 namespace IFire.WebHost {
 
     public class Program {
 
         public static int Main(string[] args) {
+            var configBuilder = new ConfigurationBuilder()
+                .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+                .AddJsonFile("appsettings.json", false);
+
+            var environmentVariable = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            if (environmentVariable.NotNull()) {
+                configBuilder.AddJsonFile($"appsettings.{environmentVariable}.json", false);
+            }
             Log.Logger = new LoggerConfiguration()
-             .ReadFrom.Configuration(new ConfigurationBuilder()
-             .SetBasePath(Directory.GetCurrentDirectory())
-             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-             .Build())
-             .CreateLogger();
+                .ReadFrom.Configuration(configBuilder.Build())
+                .CreateLogger();
             try {
                 Log.Information("启动程序...");
                 CreateHostBuilder(args).Build().Run();
