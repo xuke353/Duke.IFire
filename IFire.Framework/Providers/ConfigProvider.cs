@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using IFire.Framework.Attributes;
+﻿using IFire.Framework.Attributes;
 using IFire.Framework.Interfaces;
 using Microsoft.Extensions.Configuration;
 

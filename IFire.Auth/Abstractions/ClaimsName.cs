@@ -5,12 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace IFire.Auth.Abstractions {
-    public interface IAccountLoginHandler {
+    /// <summary>
+    /// Claims名称
+    /// </summary>
+    public static class ClaimsName {
         /// <summary>
-        /// 登录处理
+        /// 用户名
         /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        Task<LoginResultModel> Handle(UserNameLoginModel model);
+        public const string Username = "username";
     }
 }

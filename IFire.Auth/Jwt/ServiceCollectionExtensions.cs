@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 using IFire.Auth.Abstractions;
 using IFire.Framework.Interfaces;

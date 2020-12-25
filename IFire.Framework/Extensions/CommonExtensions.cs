@@ -1,12 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 
 namespace IFire.Framework.Extensions {
+
     /// <summary>
     /// 通用扩展方法
     /// </summary>
     public static class CommonExtensions {
+
         #region ==数据转换扩展==
 
         /// <summary>
@@ -211,7 +212,7 @@ namespace IFire.Framework.Extensions {
             return (T)Convert.ChangeType(s, typeof(T));
         }
 
-        #endregion
+        #endregion ==数据转换扩展==
 
         #region ==布尔转换==
 
@@ -242,7 +243,7 @@ namespace IFire.Framework.Extensions {
             return b ? "是" : "否";
         }
 
-        #endregion
+        #endregion ==布尔转换==
 
         #region ==字节转换==
 
@@ -295,6 +296,6 @@ namespace IFire.Framework.Extensions {
             return Convert.ToBase64String(bytes);
         }
 
-        #endregion
+        #endregion ==字节转换==
     }
 }

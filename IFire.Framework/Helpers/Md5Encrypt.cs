@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using IFire.Framework.Extensions;
 
 namespace IFire.Framework.Helpers {
+
     // <summary>
     /// MD5
     /// </summary>
     public class Md5Encrypt {
+
         /// <summary>
         /// MD5加密
         /// </summary>

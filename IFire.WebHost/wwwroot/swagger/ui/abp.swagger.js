@@ -1,6 +1,5 @@
 var abp = abp || {};
 (function() {
-
     /* Swagger */
 
     abp.swagger = abp.swagger || {};
@@ -35,8 +34,8 @@ var abp = abp || {};
             return false;
         }
 
-        var userName = document.getElementById('userName').value;
-        if (!userName) {
+        var username = document.getElementById('username').value;
+        if (!username) {
             alert('Username required, please try with a valid value !');
             return false;
         }
@@ -65,12 +64,12 @@ var abp = abp || {};
         xhr.open('POST', '/api/v1/users/login', true);
         //xhr.setRequestHeader('Abp.TenantId', tenantId);
         xhr.setRequestHeader('Content-type', 'application/json');
-        xhr.send("{" + "UserName:'" + userName + "'," + "Password:'" + password + "'}");
+        xhr.send("{" + "Username:'" + username + "'," + "Password:'" + password + "'}");
     };
 
     abp.swagger.login = function(callback) {
         //Get TenantId first
-        var tenancyName = document.getElementById('userName').value;
+        var tenancyName = document.getElementById('username').value;
 
         if(false && tenancyName) {
             var xhrTenancyName = new XMLHttpRequest();
@@ -79,7 +78,7 @@ var abp = abp || {};
                     var responseJSON = JSON.parse(xhrTenancyName.responseText);
                     var result = responseJSON.result;
                     if(result.state === 1) { // Tenant exists and active.
-                        loginUserInternal(result.tenantId, callback); // Login for tenant    
+                        loginUserInternal(result.tenantId, callback); // Login for tenant
                     } else {
                         alert('There is no such tenant or tenant is not active !');
                     }
@@ -156,7 +155,7 @@ var abp = abp || {};
 
         //Inputs
         //createInput(modalUxContent, 'tenancyName', 'Tenancy Name (Leave empty for Host)');
-        createInput(modalUxContent, 'userName', 'Username');
+        createInput(modalUxContent, 'username', 'Username');
         createInput(modalUxContent, 'password', 'Password', 'password');
 
         //Buttons
@@ -202,5 +201,4 @@ var abp = abp || {};
 
         section.appendChild(input);
     }
-
 })();

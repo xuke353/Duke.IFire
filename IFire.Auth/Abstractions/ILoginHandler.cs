@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-using IFire.Auth.Jwt;
 using IFire.Framework.Result;
 
 namespace IFire.Auth.Abstractions {

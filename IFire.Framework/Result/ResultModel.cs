@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace IFire.Framework.Result {
+
     /// <summary>
     /// 返回结果
     /// </summary>
     public class ResultModel<T> : IResultModel<T> {
+
         /// <summary>
         /// 处理是否成功
         /// </summary>
@@ -57,6 +56,7 @@ namespace IFire.Framework.Result {
     /// 返回结果
     /// </summary>
     public static class ResultModel {
+
         /// <summary>
         /// 成功
         /// </summary>
@@ -101,7 +101,7 @@ namespace IFire.Framework.Result {
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="success"></param>
         /// <returns></returns>

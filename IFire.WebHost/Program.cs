@@ -1,10 +1,9 @@
 ﻿using System;
-using System.IO;
+using IFire.Framework.Extensions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Serilog;
-using IFire.Framework.Extensions;
 
 namespace IFire.WebHost {
 

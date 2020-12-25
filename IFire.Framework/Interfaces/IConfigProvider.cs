@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace IFire.Framework.Interfaces {
+﻿namespace IFire.Framework.Interfaces {
 
     public interface IConfigProvider {
 

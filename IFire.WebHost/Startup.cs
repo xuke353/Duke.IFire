@@ -32,6 +32,7 @@ namespace IFire.WebHost {
             services.AddImplementedInterfaceServices("IFire.Domain", "Manage");
             services.AddTransient(typeof(IRepository<,>), typeof(IFireRepository<,>));
             services.AddJwtAuth();
+            services.AddHttpContextAccessor();
             services.AddControllers();
             services.AddSwaggerGen(c => {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "IFire.WebHost", Version = "v1" });

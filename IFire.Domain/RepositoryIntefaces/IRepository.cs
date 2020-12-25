@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using IFire.Framework.Interfaces;
 
 namespace IFire.Domain.RepositoryIntefaces {
 
-    public interface IRepository<TEntity, TPrimaryKey> where TEntity : class {
+    public interface IRepository<TEntity, TPrimaryKey> where TEntity : class, IEntity<TPrimaryKey> {
 
         IQueryable<TEntity> GetAll();
 

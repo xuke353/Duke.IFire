@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 
 namespace IFire.Data.EFCore {
@@ -30,7 +29,7 @@ namespace IFire.Data.EFCore {
             var dialect = configuration["DataBase:Dialect"];
             Version = configuration["DataBase:Version"];
             InitData = configuration["DataBase:InitData"] == "true";
-            ConnectionString = configuration["DataBase:Version"];
+            ConnectionString = configuration["DataBase:ConnectionString"];
             Dialect = (SqlDialect)Enum.Parse(typeof(SqlDialect), dialect, true);
         }
     }

@@ -1,6 +1,5 @@
 var abp = abp || {};
 (function() {
-
     /* Application paths *****************************************/
 
     // Current application root path (including virtual directory if exists).
@@ -113,5 +112,4 @@ var abp = abp || {};
     abp.security.antiForgery.getToken = function() {
         return abp.utils.getCookieValue(abp.security.antiForgery.tokenCookieName);
     };
-
 })();

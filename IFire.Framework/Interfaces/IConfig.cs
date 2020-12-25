@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace IFire.Framework.Interfaces {
+﻿namespace IFire.Framework.Interfaces {
 
     /// <summary>
     /// 配置接口，所有配置类都要继承该接口

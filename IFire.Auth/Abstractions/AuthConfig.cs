@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using IFire.Framework.Interfaces;
+﻿using IFire.Framework.Interfaces;
 
 namespace IFire.Auth.Abstractions {
 
