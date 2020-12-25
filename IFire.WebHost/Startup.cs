@@ -3,7 +3,7 @@ using IFire.Auth.Jwt;
 using IFire.Data.EFCore;
 using IFire.Data.EFCore.Repositories;
 using IFire.Domain.RepositoryIntefaces;
-using IFire.Framework.Extensions;
+using IFire.Framework.StartupServices;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -32,6 +32,7 @@ namespace IFire.WebHost {
             services.AddImplementedInterfaceServices("IFire.Domain", "Manage");
             services.AddTransient(typeof(IRepository<,>), typeof(IFireRepository<,>));
             services.AddJwtAuth();
+            services.AddCacheService();
             services.AddHttpContextAccessor();
             services.AddControllers();
             services.AddSwaggerGen(c => {

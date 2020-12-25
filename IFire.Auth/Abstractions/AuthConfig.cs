@@ -26,17 +26,17 @@ namespace IFire.Auth.Abstractions {
         /// <summary>
         /// Key
         /// </summary>
-        public string Key { get; set; } = "twAJ$j5##pVc5*y&";
+        public string Key { get; set; }
 
         /// <summary>
         /// 发行人
         /// </summary>
-        public string Issuer { get; set; } = "http://127.0.0.1:6220";
+        public string Issuer { get; set; }
 
         /// <summary>
         /// 消费者
         /// </summary>
-        public string Audience { get; set; } = "http://127.0.0.1:6220";
+        public string Audience { get; set; }
 
         /// <summary>
         /// 有效期(分钟，默认120)

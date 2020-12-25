@@ -5,7 +5,7 @@ using IFire.Framework.Attributes;
 using IFire.Framework.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace IFire.Framework.Extensions {
+namespace IFire.Framework.StartupServices {
 
     public static class DIExtension {
 
