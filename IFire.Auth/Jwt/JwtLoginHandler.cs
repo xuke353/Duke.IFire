@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using IFire.Auth.Abstractions;
 using IFire.Framework.Attributes;
 using IFire.Framework.Interfaces;
+using IFire.Framework.Result;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 
@@ -23,7 +24,7 @@ namespace IFire.Auth.Jwt {
             _configProvider = configProvider;
         }
 
-        public JwtTokenModel Hand(List<Claim> claims, string extendData) {
+        public IResultModel Hand(List<Claim> claims, string extendData) {
             var options = _configProvider.Get<AuthConfig>("Auth").Jwt;
 
             var token = Build(claims, options);
@@ -36,7 +37,7 @@ namespace IFire.Auth.Jwt {
                 RefreshToken = extendData
             };
 
-            return model;
+            return ResultModel.Success(model);
         }
 
         private static string Build(List<Claim> claims, JwtConfig config) {
