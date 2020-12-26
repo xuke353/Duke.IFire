@@ -107,6 +107,7 @@ namespace IFire.Framework.Extensions {
             }
             return obj;
         }
+
         public static async Task<TItem> GetOrCreateAsync<TItem>(this IDistributedCache cache, string key, Func<Task<TItem>> factory, DistributedCacheEntryOptions options) {
             if (!cache.TryGetValue(key, out TItem obj)) {
                 obj = await factory();

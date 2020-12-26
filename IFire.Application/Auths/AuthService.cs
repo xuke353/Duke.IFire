@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using IFire.Application.Auths.Dto;
 using IFire.Auth.Abstractions;
 using IFire.Domain.RepositoryIntefaces;
+using IFire.Framework.Extensions;
 using IFire.Framework.Helpers;
 using IFire.Framework.Interfaces;
 using IFire.Framework.Result;
@@ -12,11 +11,13 @@ using IFire.Models;
 using Microsoft.Extensions.Logging;
 
 namespace IFire.Application.Auths {
+
     public class AuthService : IAuthService {
         private readonly IConfigProvider _configProvider;
         private readonly IRepository<Account, int> _accountRepository;
         private readonly IRepository<LoginLog, int> _loginLogRepository;
         private readonly IPasswordHandler _passwordHandler;
+        private readonly IRepository<AccountAuthInfo, int> _accountAuthInfoRepository;
         private readonly ILogger<AuthService> _logger;
         private readonly IpHelper _ipHelper;
 
@@ -24,12 +25,14 @@ namespace IFire.Application.Auths {
             IRepository<Account, int> accountRepository,
             IRepository<LoginLog, int> loginLogRepository,
             IPasswordHandler passwordHandler,
+            IRepository<AccountAuthInfo, int> accountAuthInfoRepository,
             ILogger<AuthService> logger,
             IpHelper ipHelper) {
             _configProvider = configProvider;
             _accountRepository = accountRepository;
             _loginLogRepository = loginLogRepository;
             _passwordHandler = passwordHandler;
+            _accountAuthInfoRepository = accountAuthInfoRepository;
             _logger = logger;
             _ipHelper = ipHelper;
         }
@@ -39,30 +42,25 @@ namespace IFire.Application.Auths {
                 Username = input.Username,
                 LoginTime = DateTime.Now
             };
-            loginResult.UserId = 100;
-            loginResult.Name = "wang";
-            loginResult.Success = true;
-            return loginResult;
 
-            ////检测
-            //var checkResult = await Check(input, loginResult);
-            //if (checkResult.Successful) {
-            //    loginResult.Success = true;
-            //    //更新认证信息并返回登录结果
-            //    //await UpdateAuthInfo(loginResult, input);
-            //} else {
-            //    loginResult.Success = false;
-            //    loginResult.Error = checkResult.Msg;
-            //}
-            //await SaveLog(loginResult);
-            //return loginResult;
+            //检测
+            var checkResult = await Check(input, loginResult);
+            if (checkResult.Successful) {
+                loginResult.Success = true;
+                //更新认证信息并返回登录结果
+                await UpdateAuthInfo(loginResult, input);
+            } else {
+                loginResult.Success = false;
+                loginResult.Error = checkResult.Msg;
+            }
+            await SaveLog(loginResult);
+            return loginResult;
         }
 
         /// <summary>
         /// 登录处理
         /// </summary>
         private async Task<IResultModel> Check(LoginInput model, LoginResult resultModel) {
-
             //查询账户
             var account = await _accountRepository.FirstOrDefaultAsync(t => t.Username.Equals(model.Username));
             if (account == null)
@@ -104,6 +102,42 @@ namespace IFire.Application.Auths {
             } catch (Exception ex) {
                 _logger.LogError("登录日志存储失败：{@ex}", ex);
             }
+        }
+
+        /// <summary>
+        /// 更新账户认证信息
+        /// </summary>
+        private async Task UpdateAuthInfo(LoginResult resultModel, LoginInput loginModel) {
+            resultModel.RefreshToken = GenerateRefreshToken();
+
+            var authInfo = new AccountAuthInfo {
+                UserId = resultModel.UserId,
+                LoginTime = resultModel.LoginTime.ToTimestamp(),
+                RefreshToken = resultModel.RefreshToken,
+                RefreshTokenExpiredTime = DateTime.Now.AddDays(7)//默认刷新令牌有效期7天
+            };
+            var config = _configProvider.Get<AuthConfig>("Auth");
+
+            //设置过期时间
+            if (config.Jwt.RefreshTokenExpires > 0) {
+                authInfo.RefreshTokenExpiredTime = DateTime.UtcNow.AddDays(config.Jwt.RefreshTokenExpires);
+            }
+
+            var entity = await _accountAuthInfoRepository.FirstOrDefaultAsync(t => t.UserId == resultModel.UserId);
+            if (entity != null) {
+                authInfo.Id = entity.Id;
+                await _accountAuthInfoRepository.UpdateAsync(authInfo);
+            } else {
+                await _accountAuthInfoRepository.InsertAsync(authInfo);
+            }
+        }
+
+        /// <summary>
+        /// 生成刷新令牌
+        /// </summary>
+        /// <returns></returns>
+        private static string GenerateRefreshToken() {
+            return Guid.NewGuid().ToString().Replace("-", "");
         }
 
         public Task<IResultModel> GetAuthInfo() {

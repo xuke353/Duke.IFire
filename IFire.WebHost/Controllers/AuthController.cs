@@ -26,6 +26,7 @@ namespace IFire.WebHost.Controllers {
             _loginHandler = loginHandler;
             _configProvider = configProvider;
         }
+
         /// <summary>
         /// 登陆
         /// </summary>
@@ -35,14 +36,14 @@ namespace IFire.WebHost.Controllers {
         [AllowAnonymous]
         [DisableAuditing]
         public async Task<IResultModel> Login(LoginInput input) {
-
             var result = await _authService.Login(input);
             return LoginHandle(result);
         }
+
         /// <summary>
         /// 登录处理
         /// </summary>
-        private  IResultModel LoginHandle(LoginResult result) {
+        private IResultModel LoginHandle(LoginResult result) {
             if (result.Success) {
                 var auth = _configProvider.Get<AuthConfig>("Auth");
                 var claims = new List<Claim>
@@ -60,7 +61,5 @@ namespace IFire.WebHost.Controllers {
 
             return ResultModel.Failed(result.Error);
         }
-
-
     }
 }

@@ -1,11 +1,11 @@
-﻿
-using IFire.Framework.Abstractions;
+﻿using IFire.Framework.Abstractions;
 using IFire.Framework.Interfaces;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
 
 namespace IFire.Framework.StartupServices {
+
     public static class CacheExtension {
 
         /// <summary>

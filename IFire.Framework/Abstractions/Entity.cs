@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 using IFire.Framework.Interfaces;
 
 namespace IFire.Framework.Abstractions {
+
     [Serializable]
     public abstract class Entity<TPrimaryKey> : IEntity<TPrimaryKey> {
 

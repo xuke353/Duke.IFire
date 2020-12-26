@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace IFire.Framework.Extensions {
+
     public static class DateTimeExtensions {
+
         /// <summary>
         /// 日期格式化
         /// </summary>
@@ -40,21 +40,27 @@ namespace IFire.Framework.Extensions {
                 case 0:
                     week = "星期日";
                     break;
+
                 case 1:
                     week = "星期一";
                     break;
+
                 case 2:
                     week = "星期二";
                     break;
+
                 case 3:
                     week = "星期三";
                     break;
+
                 case 4:
                     week = "星期四";
                     break;
+
                 case 5:
                     week = "星期五";
                     break;
+
                 default:
                     week = "星期六";
                     break;

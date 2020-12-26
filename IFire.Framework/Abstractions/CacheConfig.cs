@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using IFire.Framework.Extensions;
+﻿using IFire.Framework.Extensions;
 using IFire.Framework.Interfaces;
 
 namespace IFire.Framework.Abstractions {
+
     /// <summary>
     /// 缓存配置
     /// </summary>
     public class CacheConfig : IConfig {
+
         /// <summary>
         /// 缓存提供器
         /// </summary>
@@ -21,7 +20,6 @@ namespace IFire.Framework.Abstractions {
     }
 
     public class RedisConfig {
-
         private string _instanceName;
 
         /// <summary>
@@ -33,6 +31,7 @@ namespace IFire.Framework.Abstractions {
         }
 
         private string _connnectionString;
+
         /// <summary>
         /// 连接字符串
         /// </summary>
@@ -40,17 +39,18 @@ namespace IFire.Framework.Abstractions {
             get => _connnectionString.NotNull() ? _connnectionString : "127.0.0.1";
             set => _connnectionString = value;
         }
-
     }
 
     /// <summary>
     /// 缓存提供器
     /// </summary>
     public enum CacheProvider {
+
         /// <summary>
         /// 内存缓存
         /// </summary>
         MemoryCache,
+
         /// <summary>
         /// Redis
         /// </summary>
