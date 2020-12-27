@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
+using Autofac;
 using IFire.Auth.Jwt;
 using IFire.Data.EFCore;
 using IFire.Data.EFCore.Repositories;
 using IFire.Domain.RepositoryIntefaces;
+using IFire.Framework.Helpers;
 using IFire.Framework.StartupServices;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -16,21 +20,23 @@ using Microsoft.OpenApi.Models;
 namespace IFire.WebHost {
 
     public class Startup {
-        public static readonly ILoggerFactory EFLoggerFactory = LoggerFactory.Create(builder => { builder.AddSystemdConsole(); });
+        public static readonly ILoggerFactory EFLoggerFactory = LoggerFactory.Create(builder => { builder.AddConsole(); });
         public IWebHostEnvironment Environment { get; }
         public IConfiguration Configuration { get; }
-
+        public List<Assembly> Assemblies { get; }
         public Startup(IWebHostEnvironment environment, IConfiguration configuration) {
             Configuration = configuration;
             Environment = environment;
+            Assemblies = AssemblyHelper.Load();
             DbOptions.InitConfiguration(configuration);
         }
-
+        public void ConfigureContainer(ContainerBuilder builder) {
+            //注册Module
+            builder.RegisterAssemblyModules(Assemblies.ToArray());
+        }
         public void ConfigureServices(IServiceCollection services) {
-            services.AddWithAttributeServices();
-            services.AddImplementedInterfaceServices("IFire.Application", "Service");
-            services.AddImplementedInterfaceServices("IFire.Domain", "Manage");
-            services.AddTransient(typeof(IRepository<,>), typeof(IFireRepository<,>));
+            //通用特性方式的DI
+            services.RegisterAssemblyServices(Assemblies.ToArray());
             services.AddJwtAuth();
             services.AddCacheService();
             services.AddHttpContextAccessor();

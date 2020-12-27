@@ -1,4 +1,5 @@
 ﻿using System;
+using Autofac.Extensions.DependencyInjection;
 using IFire.Framework.Extensions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -35,6 +36,7 @@ namespace IFire.WebHost {
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+            .UseServiceProviderFactory(new AutofacServiceProviderFactory())
             .ConfigureWebHostDefaults(webBuilder => {
                 webBuilder
                 .UseSerilog()

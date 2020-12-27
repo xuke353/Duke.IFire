@@ -42,7 +42,6 @@ namespace IFire.Application.Auths {
                 Username = input.Username,
                 LoginTime = DateTime.Now
             };
-
             //检测
             var checkResult = await Check(input, loginResult);
             if (checkResult.Successful) {

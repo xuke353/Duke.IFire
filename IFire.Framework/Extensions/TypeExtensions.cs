@@ -1,252 +1,127 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 
-// ReSharper disable once CheckNamespace
 namespace IFire.Framework.Extensions {
 
     /// <summary>
-    /// 类型扩展
+    /// 类型<see cref="Type"/>辅助扩展方法类
     /// </summary>
     public static class TypeExtensions {
+        /// <summary>
+        /// 判断当前类型是否可由指定类型派生
+        /// </summary>
+        public static bool IsDeriveClassFrom(this Type type, Type baseType, bool canAbstract = false) {
+            if (type == null)
+                throw new ArgumentNullException(nameof(type));
+            if (baseType == null)
+                throw new ArgumentNullException(nameof(baseType));
+            return type.IsClass && !canAbstract && !type.IsAbstract && type.IsBaseOn(baseType);
+        }
 
         /// <summary>
-        /// 判断属性是否是静态的
+        /// 判断类型是否为Nullable类型
         /// </summary>
-        /// <param name="property"></param>
-        /// <returns></returns>
-        public static bool IsStatic(this PropertyInfo property) => (property.GetMethod ?? property.SetMethod).IsStatic;
+        /// <param name="type"> 要处理的类型 </param>
+        /// <returns> 是返回True，不是返回False </returns>
+        public static bool IsNullableType(this Type type) {
+            return type != null && type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
+        }
 
         /// <summary>
-        /// 判断指定类型是否实现于该类型
+        /// 通过类型转换器获取Nullable类型的基础类型
         /// </summary>
-        /// <param name="serviceType"></param>
-        /// <param name="implementType"></param>
+        /// <param name="type"> 要处理的类型对象 </param>
+        /// <returns> </returns>
+        public static Type GetUnNullableType(this Type type) {
+            if (IsNullableType(type)) {
+                NullableConverter nullableConverter = new NullableConverter(type);
+                return nullableConverter.UnderlyingType;
+            }
+            return type;
+        }
+
+        /// <summary>
+        /// 检查指定指定类型成员中是否存在指定的Attribute特性
+        /// </summary>
+        /// <typeparam name="T">要检查的Attribute特性类型</typeparam>
+        /// <param name="memberInfo">要检查的类型成员</param>
+        /// <param name="inherit">是否从继承中查找</param>
+        /// <returns>是否存在</returns>
+        public static bool HasAttribute<T>(this MemberInfo memberInfo, bool inherit = true) where T : Attribute {
+            return memberInfo.IsDefined(typeof(T), inherit);
+        }
+
+        /// <summary>
+        /// 从类型成员获取指定Attribute特性
+        /// </summary>
+        /// <typeparam name="T">Attribute特性类型</typeparam>
+        /// <param name="memberInfo">类型类型成员</param>
+        /// <param name="inherit">是否从继承中查找</param>
+        /// <returns>存在返回第一个，不存在返回null</returns>
+        public static T GetAttribute<T>(this MemberInfo memberInfo, bool inherit = true) where T : Attribute {
+            //var descripts = memberInfo.GetCustomAttributes(typeof(T), inherit);
+            //return descripts.FirstOrDefault() as T;
+            var attrs = memberInfo.GetCustomAttributes(inherit).OfType<T>().ToArray();
+            if (attrs.Length > 0) {
+                return attrs[0];
+            }
+
+            attrs = memberInfo.DeclaringType.GetTypeInfo().GetCustomAttributes(inherit).OfType<T>().ToArray();
+            if (attrs.Length > 0) {
+                return attrs[0];
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// 判断当前泛型类型是否可由指定类型的实例填充
+        /// </summary>
+        /// <param name="genericType">泛型类型</param>
+        /// <param name="type">指定类型</param>
         /// <returns></returns>
-        public static bool IsImplementType(this Type serviceType, Type implementType) {
-            //泛型
-            if (serviceType.IsGenericType) {
-                if (serviceType.IsInterface) {
-                    var interfaces = implementType.GetInterfaces();
-                    if (interfaces.Any(m => m.IsGenericType && m.GetGenericTypeDefinition() == serviceType)) {
+        public static bool IsGenericAssignableFrom(this Type genericType, Type type) {
+            if (genericType == null)
+                throw new ArgumentNullException(nameof(genericType));
+            if (type == null)
+                throw new ArgumentNullException(nameof(type));
+            if (!genericType.IsGenericType) {
+                throw new ArgumentException("该功能只支持泛型类型的调用，非泛型类型可使用 IsAssignableFrom 方法。");
+            }
+
+            List<Type> allOthers = new List<Type> { type };
+            if (genericType.IsInterface) {
+                allOthers.AddRange(type.GetInterfaces());
+            }
+
+            foreach (var other in allOthers) {
+                Type cur = other;
+                while (cur != null) {
+                    if (cur.IsGenericType) {
+                        cur = cur.GetGenericTypeDefinition();
+                    }
+                    if (cur.IsSubclassOf(genericType) || cur == genericType) {
                         return true;
                     }
-                } else {
-                    if (implementType.BaseType != null && implementType.BaseType.IsGenericType && implementType.BaseType.GetGenericTypeDefinition() == serviceType) {
-                        return true;
-                    }
-                }
-            } else {
-                if (serviceType.IsInterface) {
-                    var interfaces = implementType.GetInterfaces();
-                    if (interfaces.Any(m => m == serviceType))
-                        return true;
-                } else {
-                    if (implementType.BaseType != null && implementType.BaseType == serviceType)
-                        return true;
+                    cur = cur.BaseType;
                 }
             }
             return false;
         }
 
         /// <summary>
-        /// 判断是否继承自指定的泛型
+        /// 返回当前类型是否是指定基类的派生类
         /// </summary>
-        /// <param name="type"></param>
-        /// <param name="generic"></param>
+        /// <param name="type">当前类型</param>
+        /// <param name="baseType">要判断的基类型</param>
         /// <returns></returns>
-        public static bool IsSubclassOfGeneric(this Type type, Type generic) {
-            while (type != null && type != typeof(object)) {
-                var cur = type.IsGenericType ? type.GetGenericTypeDefinition() : type;
-                if (generic == cur) {
-                    return true;
-                }
-                type = type.BaseType;
+        public static bool IsBaseOn(this Type type, Type baseType) {
+            if (baseType.IsGenericTypeDefinition) {
+                return baseType.IsGenericAssignableFrom(type);
             }
-            return false;
+            return baseType.IsAssignableFrom(type);
         }
-
-        /// <summary>
-        /// 判断是否可空类型
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static bool IsNullable(this Type type) {
-            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
-        }
-
-        /// <summary>
-        /// 判断是否是String类型
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static bool IsString(this Type type) {
-            return type == TypeConst.String;
-        }
-
-        /// <summary>
-        /// 判断是否是Byte类型
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static bool IsByte(this Type type) {
-            return type == TypeConst.Byte;
-        }
-
-        /// <summary>
-        /// 判断是否是Char类型
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static bool IsChar(this Type type) {
-            return type == TypeConst.Char;
-        }
-
-        /// <summary>
-        /// 判断是否是Short类型
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static bool IsShort(this Type type) {
-            return type == TypeConst.Short;
-        }
-
-        /// <summary>
-        /// 判断是否是Int类型
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static bool IsInt(this Type type) {
-            return type == TypeConst.Int;
-        }
-
-        /// <summary>
-        /// 判断是否是Long类型
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static bool IsLong(this Type type) {
-            return type == TypeConst.Long;
-        }
-
-        /// <summary>
-        /// 判断是否是Float类型
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static bool IsFloat(this Type type) {
-            return type == TypeConst.Float;
-        }
-
-        /// <summary>
-        /// 判断是否是Double类型
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static bool IsDouble(this Type type) {
-            return type == TypeConst.Double;
-        }
-
-        /// <summary>
-        /// 判断是否是Decimal类型
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static bool IsDecimal(this Type type) {
-            return type == TypeConst.Decimal;
-        }
-
-        /// <summary>
-        /// 判断是否是DateTime类型
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static bool IsDateTime(this Type type) {
-            return type == TypeConst.DateTime;
-        }
-
-        /// <summary>
-        /// 判断是否是Guid类型
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static bool IsGuid(this Type type) {
-            return type == TypeConst.Guid;
-        }
-
-        /// <summary>
-        /// 判断是否是Bool类型
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static bool IsBool(this Type type) {
-            return type == TypeConst.Bool;
-        }
-    }
-
-    /// <summary>
-    /// 类型常量
-    /// </summary>
-    public class TypeConst {
-
-        /// <summary>
-        /// String
-        /// </summary>
-        public static readonly Type String = typeof(string);
-
-        /// <summary>
-        /// Byte
-        /// </summary>
-        public static readonly Type Byte = typeof(byte);
-
-        /// <summary>
-        /// Char
-        /// </summary>
-        public static readonly Type Char = typeof(char);
-
-        /// <summary>
-        /// Short
-        /// </summary>
-        public static readonly Type Short = typeof(short);
-
-        /// <summary>
-        /// Int
-        /// </summary>
-        public static readonly Type Int = typeof(int);
-
-        /// <summary>
-        /// Long
-        /// </summary>
-        public static readonly Type Long = typeof(long);
-
-        /// <summary>
-        /// Float
-        /// </summary>
-        public static readonly Type Float = typeof(float);
-
-        /// <summary>
-        /// Double
-        /// </summary>
-        public static readonly Type Double = typeof(double);
-
-        /// <summary>
-        /// Decimal
-        /// </summary>
-        public static readonly Type Decimal = typeof(decimal);
-
-        /// <summary>
-        /// DateTime
-        /// </summary>
-        public static readonly Type DateTime = typeof(DateTime);
-
-        /// <summary>
-        /// Guid
-        /// </summary>
-        public static readonly Type Guid = typeof(Guid);
-
-        /// <summary>
-        /// Bool
-        /// </summary>
-        public static readonly Type Bool = typeof(bool);
     }
 }

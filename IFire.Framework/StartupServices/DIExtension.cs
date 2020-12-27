@@ -116,8 +116,20 @@ namespace IFire.Framework.StartupServices {
         /// </summary>
         /// <param name="services"></param>
         /// <returns></returns>
-        public static IServiceCollection AddWithAttributeServices(this IServiceCollection services) {
+        public static IServiceCollection RegisterAssemblyServices(this IServiceCollection services) {
             var assemblies = AssemblyHelper.Load();
+            foreach (var assembly in assemblies) {
+                services.AddServicesFromAssembly(assembly);
+            }
+            return services;
+        }
+
+        /// <summary>
+        /// 注入特定程序集服务
+        /// </summary>
+        /// <param name="services"></param>
+        /// <returns></returns>
+        public static IServiceCollection RegisterAssemblyServices(this IServiceCollection services, params Assembly[] assemblies) {
             foreach (var assembly in assemblies) {
                 services.AddServicesFromAssembly(assembly);
             }
