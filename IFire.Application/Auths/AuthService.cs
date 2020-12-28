@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 
 namespace IFire.Application.Auths {
 
-    public class AuthService : IAuthService {
+    public class AuthService : IFireAppServiceBase, IAuthService {
         private readonly IConfigProvider _configProvider;
         private readonly IRepository<Account, int> _accountRepository;
         private readonly IRepository<LoginLog, int> _loginLogRepository;

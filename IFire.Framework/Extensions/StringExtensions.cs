@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Text;
 
-// ReSharper disable once CheckNamespace
 namespace IFire.Framework.Extensions {
 
     public static class StringExtensions {

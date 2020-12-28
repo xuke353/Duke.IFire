@@ -22,7 +22,7 @@ namespace IFire.Auth.Web {
                 return;
 
             var configProvider = context.HttpContext.RequestServices.GetService<IConfigProvider>();
-            var config = configProvider.Get<AuthConfig>();
+            var config = configProvider.Get<AuthConfig>("Auth");
             //是否开启权限认证
             if (!config.Validate)
                 return;

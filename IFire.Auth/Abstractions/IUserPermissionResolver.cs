@@ -1,0 +1,36 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace IFire.Auth.Abstractions {
+    public interface IUserPermissionResolver {
+        /// <summary>
+        /// 解析
+        /// </summary>
+        /// <param name="userId">用户编号</param>
+        /// <returns></returns>
+        Task<IList<string>> Resolve(int userId);
+        /// <summary>
+        /// 解析菜单列表
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        //Task<IList<AccountMenuItem>> ResolveMenus(Guid userId);
+
+        /// <summary>
+        /// 解析页面编码列表
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        Task<IList<string>> ResolvePages(Guid userId);
+
+        /// <summary>
+        /// 解析按钮编码列表
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        Task<IList<string>> ResolveButtons(Guid userId);
+    }
+}

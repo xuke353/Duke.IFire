@@ -11,7 +11,7 @@ using StackExchange.Profiling;
 
 namespace IFire.WebHost.Controllers {
 
-
+    [Route("api/v{version:apiVersion}/test")]
     public class WeatherForecastController : ControllerAbstract {
 
         private static readonly string[] Summaries = new[]
