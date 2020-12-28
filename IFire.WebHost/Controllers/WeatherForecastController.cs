@@ -10,9 +10,9 @@ using Microsoft.Extensions.Logging;
 namespace IFire.WebHost.Controllers {
 
     [ApiController]
-    [Route("api/[controller]/[action]")]
-    //[PermissionValidate]
-    public class WeatherForecastController : ControllerBase {
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/sfsdf")]
+    public class WeatherForecastController : ControllerAbstract {
 
         private static readonly string[] Summaries = new[]
         {

@@ -14,7 +14,7 @@ namespace IFire.Application.Auths
         /// <summary>
         /// 用户名登录
         /// </summary>
-        /// <param name="model">登录模型</param>
+        /// <param name="input"></param>
         /// <returns></returns>
         Task<LoginResult> Login(LoginInput input);       
 
@@ -34,8 +34,7 @@ namespace IFire.Application.Auths
         /// <summary>
         /// 查询指定账户的认证信息(缓存优先)
         /// </summary>
-        /// <param name="accountId"></param>
-        /// <param name="platform"></param>
+        /// <param name="userId"></param>
         /// <returns></returns>
         Task<AccountAuthInfo> GetAuthInfo(int userId);
     }
