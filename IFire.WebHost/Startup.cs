@@ -5,6 +5,7 @@ using System.Reflection;
 using Autofac;
 using AutoMapper;
 using IFire.Auth.Jwt;
+using IFire.Auth.Web;
 using IFire.Data.EFCore;
 using IFire.Data.EFCore.Repositories;
 using IFire.Domain.RepositoryIntefaces;
@@ -19,6 +20,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace IFire.WebHost {
 
@@ -49,17 +51,24 @@ namespace IFire.WebHost {
                 options.SubstituteApiVersionInUrl = true;
             });
             services.AddHttpContextAccessor();
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson();
             AddSwaggerGen(services);
 
             services.AddDbContext<IFireDbContext>(option => {
-                option.UseMySql(DbOptions.ConnectionString, new MySqlServerVersion(new Version(DbOptions.Version)));
+                option.UseMySql(DbOptions.ConnectionString, new MySqlServerVersion(new Version(DbOptions.Version)),
+                    p => p.MigrationsAssembly("IFire.Data"));
                 if (Environment.IsDevelopment()) {
                     //打印sql
                     option.UseLoggerFactory(EFLoggerFactory);
                     option.EnableSensitiveDataLogging(true);//显示sql参数
                 }
             });
+
+            services.AddMiniProfiler(options => {
+                options.RouteBasePath = "/profiler";
+            }).AddEntityFramework();
+            //API URL转小写
+            services.AddRouting(options => options.LowercaseUrls = true);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApiVersionDescriptionProvider provider) {
@@ -83,7 +92,7 @@ namespace IFire.WebHost {
             app.UseAuthentication();
             //授权
             app.UseAuthorization();
-
+            app.UseMiniProfiler();
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllers();
             });
@@ -91,26 +100,32 @@ namespace IFire.WebHost {
 
 
         private static void AddSwaggerGen(IServiceCollection services) {
-            services.AddSwaggerGen(options => {
+            services.AddSwaggerGen(c => {
             var provider = services.BuildServiceProvider().GetRequiredService<IApiVersionDescriptionProvider>();
                 foreach (var description in provider.ApiVersionDescriptions) {
-                    options.SwaggerDoc(description.GroupName, new OpenApiInfo {
+                    c.SwaggerDoc(description.GroupName, new OpenApiInfo {
                         Title = "Duke.IFire API",
                         Version = description.ApiVersion.ToString(),
                         Description = @"<a target=""_blank"" href=""https://github.com/xuke353/AdmBoots"">GitHub</a> &nbsp; <a target=""_blank"" href=""/healthchecks-ui"">健康检查</a> &nbsp; <code>Powered by .NET5</code>"
                     });
                 }
-                options.DocInclusionPredicate((_, _) => true);
-                options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme() {
+                c.DocInclusionPredicate((_, _) => true);
+                c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme() {
                     Description = "JWT认证请求头格式: \"Authorization: Bearer {token}\"",
                     Name = "Authorization",
                     In = ParameterLocation.Header,
                     Type = SecuritySchemeType.ApiKey
                 });
 
+                // 开启加权小锁
+                c.OperationFilter<AddResponseHeadersFilter>();
+                c.OperationFilter<AppendAuthorizeToSummaryOperationFilter>();
+                //启用oauth2安全授权访问api接口
+                c.OperationFilter<SecurityRequirementsOperationFilter>();
+
                 var basePath = AppContext.BaseDirectory;
-                options.IncludeXmlComments(Path.Combine(basePath, "IFire.Application.xml"));
-                options.IncludeXmlComments(Path.Combine(basePath, "IFire.WebHost.xml"));
+                c.IncludeXmlComments(Path.Combine(basePath, "IFire.Application.xml"));
+                c.IncludeXmlComments(Path.Combine(basePath, "IFire.WebHost.xml"));
             });
             services.AddApiVersioning(option => option.ReportApiVersions = true);
             services.AddVersionedApiExplorer(options => {

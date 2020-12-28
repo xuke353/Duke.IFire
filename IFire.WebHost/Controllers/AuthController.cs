@@ -15,9 +15,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace IFire.WebHost.Controllers {
 
-    [ApiController]
-    [Route("api/[controller]/[action]")]
-    public class AuthController : ControllerBase {
+    [AllowAnonymous]
+    public class AuthController : ControllerAbstract {
         private readonly IAuthService _authService;
         private readonly ILoginHandler _loginHandler;
         private readonly IConfigProvider _configProvider;
@@ -36,9 +35,9 @@ namespace IFire.WebHost.Controllers {
         [HttpPost]
         [AllowAnonymous]
         [DisableAuditing]
-        public async Task<IResultModel> Login(LoginInput input) {
+        public async Task<IActionResult> Login(LoginInput input) {
             var result = await _authService.Login(input);
-            return LoginHandle(result);
+            return Ok(LoginHandle(result));
         }
 
         /// <summary>

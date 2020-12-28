@@ -46,9 +46,9 @@ var abp = abp || {};
             if(xhr.readyState === XMLHttpRequest.DONE) {
                 var responseJson = JSON.parse(xhr.responseText);
                 if (xhr.status === 200) {//
-                    if (responseJson.status) {//if(xhr.status === 200) {
+                    if (responseJson.code) {//if(xhr.status === 200) {
                         var result = responseJson.data;
-                        var expireDate = new Date(Date.now() + (result.expireInSeconds * 1000));
+                        var expireDate = new Date(Date.now() + (result.expiresIn * 1000));
                         abp.auth.setToken(result.accessToken, expireDate);
                         callback();
                     } else {
@@ -61,7 +61,7 @@ var abp = abp || {};
             }
         };
 
-        xhr.open('POST', '/api/v1/users/login', true);
+        xhr.open('POST', '/api/v1/auth/login', true);
         //xhr.setRequestHeader('Abp.TenantId', tenantId);
         xhr.setRequestHeader('Content-type', 'application/json');
         xhr.send("{" + "Username:'" + username + "'," + "Password:'" + password + "'}");

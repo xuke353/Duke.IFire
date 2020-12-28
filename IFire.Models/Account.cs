@@ -18,17 +18,20 @@ namespace IFire.Models {
         /// 用户名
         /// </summary>
         [Required(ErrorMessage = "请输入用户名")]
+        [MaxLength(50)]
         public string Username { get; set; }
 
         /// <summary>
         /// 密码
         /// </summary>
+        [MaxLength(50)]
         public string Password { get; set; }
 
         /// <summary>
         /// 名称
         /// </summary>
         [Required(ErrorMessage = "请输入名称")]
+        [MaxLength(50)]
         public string Name { get; set; }
 
         /// <summary>
@@ -48,6 +51,7 @@ namespace IFire.Models {
         /// 绑定角色列表
         /// </summary>
         [Required(ErrorMessage = "请选择角色")]
+        [NotMapped]
         public List<int> Roles { get; set; }
 
         public bool Deleted { get; set; }

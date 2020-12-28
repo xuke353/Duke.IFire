@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using IFire.Framework.Abstractions;
@@ -15,7 +16,7 @@ namespace IFire.Models {
         /// <summary>
         /// 用户名
         /// </summary>
-
+        [MaxLength(50)]
         public string Username { get; set; }
 
         /// <summary>
@@ -26,6 +27,7 @@ namespace IFire.Models {
         /// <summary>
         /// 登录IP
         /// </summary>
+        [MaxLength(50)]
         public string IP { get; set; }
 
         /// <summary>
@@ -36,12 +38,13 @@ namespace IFire.Models {
         /// <summary>
         /// 错误信息
         /// </summary>
-
+        [MaxLength(2000)]
         public string Error { get; set; }
 
         /// <summary>
         /// UA
         /// </summary>
+        [MaxLength(1000)]
         public string UserAgent { get; set; }
     }
 }

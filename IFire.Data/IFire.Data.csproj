@@ -17,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\IFire.Domain\IFire.Domain.csproj" />
     <ProjectReference Include="..\IFire.Framework\IFire.Framework.csproj" />
+    <ProjectReference Include="..\IFire.Models\IFire.Models.csproj" />
   </ItemGroup>
 
 </Project>
