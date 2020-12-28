@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace IFire.Data.EFCore.Uow {
+
     public class IFireUnitOfWork : IIFireUnitOfWork {
         public IFireDbContext CurrentDbContext { get; }
 

@@ -1,11 +1,10 @@
-﻿
-
-using System.Reflection;
+﻿using System.Reflection;
 using System.Threading.Tasks;
 using Castle.DynamicProxy;
 using IFire.Framework.Extensions;
 
 namespace IFire.Data.EFCore.Uow {
+
     /// <summary>
     /// 工作单元拦截器
     /// </summary>

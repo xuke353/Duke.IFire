@@ -1,13 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 using IFire.Framework.Abstractions;
 
 namespace IFire.Models {
+
     [Table("Login_Log")]
-    public class LoginLog: Entity {
+    public class LoginLog : Entity {
+
         /// <summary>
         /// 账户编号
         /// </summary>

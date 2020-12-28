@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace IFire.Framework.Helpers {
+
     public static class InternalAsyncHelper {
 
         public static async Task AwaitTaskWithFinally(Task actualReturnValue, Action<Exception> finalAction) {

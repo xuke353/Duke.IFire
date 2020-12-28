@@ -1,22 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using IFire.Application.Auths.Dto;
 using IFire.Framework.Result;
 using IFire.Models;
 
-namespace IFire.Application.Auths
-{
-    public interface IAuthService
-    {
+namespace IFire.Application.Auths {
+
+    public interface IAuthService {
 
         /// <summary>
         /// 用户名登录
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        Task<LoginResult> Login(LoginInput input);       
+        Task<LoginResult> Login(LoginInput input);
 
         /// <summary>
         /// 刷新令牌(只针对JWT认证方式)

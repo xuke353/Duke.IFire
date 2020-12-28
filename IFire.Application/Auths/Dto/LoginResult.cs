@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using IFire.Models.Enums;
 
 namespace IFire.Application.Auths.Dto {
+
     public class LoginResult {
+
         /// <summary>
         /// 是否成功
         /// </summary>
@@ -20,7 +20,6 @@ namespace IFire.Application.Auths.Dto {
         /// </summary>
         public int UserId { get; set; }
 
-
         /// <summary>
         /// 用户名
         /// </summary>
@@ -30,10 +29,12 @@ namespace IFire.Application.Auths.Dto {
         /// 姓名
         /// </summary>
         public string Name { get; set; }
+
         /// <summary>
         /// 账户类型
         /// </summary>
         public AccountType AccountType { get; set; }
+
         /// <summary>
         /// 登录时间
         /// </summary>

@@ -1,18 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 using IFire.Framework.Abstractions;
 using IFire.Framework.Result;
 using IFire.Models.Enums;
 
 namespace IFire.Models {
+
     /// <summary>
     /// 账户
     /// </summary>
     [Table("Account")]
-    public class Account: Entity {
+    public class Account : Entity {
 
         /// <summary>
         /// 用户名
@@ -38,10 +37,12 @@ namespace IFire.Models {
         /// 账户状态
         /// </summary>
         public AccountStatus Status { get; set; } = AccountStatus.激活;
+
         /// <summary>
         /// 类型
         /// </summary>
         public AccountType Type { get; set; }
+
         /// <summary>
         /// 账户是否锁定(锁定后不允许在账户管理中修改)
         /// </summary>
@@ -55,6 +56,7 @@ namespace IFire.Models {
         public List<int> Roles { get; set; }
 
         public bool Deleted { get; set; }
+
         /// <summary>
         /// 账户检测
         /// </summary>

@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace IFire.Auth.Abstractions {
+
     public interface IUserPermissionResolver {
+
         /// <summary>
         /// 解析
         /// </summary>
         /// <param name="userId">用户编号</param>
         /// <returns></returns>
         Task<IList<string>> Resolve(int userId);
+
         /// <summary>
         /// 解析菜单列表
         /// </summary>

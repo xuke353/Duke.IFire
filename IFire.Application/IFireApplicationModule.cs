@@ -3,7 +3,9 @@ using Autofac.Extras.DynamicProxy;
 using IFire.Data.EFCore.Uow;
 
 namespace IFire.Application {
+
     public class IFireApplicationModule : Module {
+
         protected override void Load(ContainerBuilder builder) {
             builder.RegisterType<UnitOfWorkInterceptor>().AsSelf();
             builder.RegisterAssemblyTypes(ThisAssembly)

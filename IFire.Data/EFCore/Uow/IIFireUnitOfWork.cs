@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace IFire.Data.EFCore.Uow {
+
     public interface IIFireUnitOfWork {
         IFireDbContext CurrentDbContext { get; }
+
         IDbContextTransaction Begin();
 
         int SaveChanges();

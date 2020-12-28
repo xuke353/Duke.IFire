@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace IFire.Application.Auths.Dto {
-   public  class LoginInput {
+
+    public class LoginInput {
 
         /// <summary>
         /// 用户名

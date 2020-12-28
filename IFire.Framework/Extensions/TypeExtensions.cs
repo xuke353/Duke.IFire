@@ -10,6 +10,7 @@ namespace IFire.Framework.Extensions {
     /// 类型<see cref="Type"/>辅助扩展方法类
     /// </summary>
     public static class TypeExtensions {
+
         /// <summary>
         /// 判断当前类型是否可由指定类型派生
         /// </summary>

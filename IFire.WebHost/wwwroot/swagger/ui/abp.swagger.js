@@ -1,12 +1,12 @@
 var abp = abp || {};
-(function() {
+(function () {
     /* Swagger */
 
     abp.swagger = abp.swagger || {};
 
-    abp.swagger.addAuthToken = function() {
+    abp.swagger.addAuthToken = function () {
         var authToken = abp.auth.getToken();
-        if(!authToken) {
+        if (!authToken) {
             return false;
         }
 
@@ -16,9 +16,9 @@ var abp = abp || {};
         return true;
     }
 
-    abp.swagger.addCsrfToken = function() {
+    abp.swagger.addCsrfToken = function () {
         var csrfToken = abp.security.antiForgery.getToken();
-        if(!csrfToken) {
+        if (!csrfToken) {
             return false;
         }
         var csrfCookieAuth =
@@ -42,8 +42,8 @@ var abp = abp || {};
 
         var xhr = new XMLHttpRequest();
 
-        xhr.onreadystatechange = function() {
-            if(xhr.readyState === XMLHttpRequest.DONE) {
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
                 var responseJson = JSON.parse(xhr.responseText);
                 if (xhr.status === 200) {//
                     if (responseJson.code) {//if(xhr.status === 200) {
@@ -67,17 +67,17 @@ var abp = abp || {};
         xhr.send("{" + "Username:'" + username + "'," + "Password:'" + password + "'}");
     };
 
-    abp.swagger.login = function(callback) {
+    abp.swagger.login = function (callback) {
         //Get TenantId first
         var tenancyName = document.getElementById('username').value;
 
-        if(false && tenancyName) {
+        if (false && tenancyName) {
             var xhrTenancyName = new XMLHttpRequest();
-            xhrTenancyName.onreadystatechange = function() {
-                if(xhrTenancyName.readyState === XMLHttpRequest.DONE && xhrTenancyName.status === 200) {
+            xhrTenancyName.onreadystatechange = function () {
+                if (xhrTenancyName.readyState === XMLHttpRequest.DONE && xhrTenancyName.status === 200) {
                     var responseJSON = JSON.parse(xhrTenancyName.responseText);
                     var result = responseJSON.result;
-                    if(result.state === 1) { // Tenant exists and active.
+                    if (result.state === 1) { // Tenant exists and active.
                         loginUserInternal(result.tenantId, callback); // Login for tenant
                     } else {
                         alert('There is no such tenant or tenant is not active !');
@@ -93,17 +93,17 @@ var abp = abp || {};
         }
     };
 
-    abp.swagger.logout = function() {
+    abp.swagger.logout = function () {
         abp.auth.clearToken();
     }
 
-    abp.swagger.closeAuthDialog = function() {
-        if(document.getElementById('abp-auth-dialog')) {
+    abp.swagger.closeAuthDialog = function () {
+        if (document.getElementById('abp-auth-dialog')) {
             document.getElementsByClassName("swagger-ui")[1].removeChild(document.getElementById('abp-auth-dialog'));
         }
     }
 
-    abp.swagger.openAuthDialog = function(loginCallback) {
+    abp.swagger.openAuthDialog = function (loginCallback) {
         abp.swagger.closeAuthDialog();
 
         var abpAuthDialog = document.createElement('div');
@@ -146,8 +146,8 @@ var abp = abp || {};
         modalUxContent.className = 'modal-ux-content';
         modalUxInner.appendChild(modalUxContent);
 
-        modalUxContent.onkeydown = function(e) {
-            if(e.keyCode === 13) {
+        modalUxContent.onkeydown = function (e) {
+            if (e.keyCode === 13) {
                 //try to login when user presses enter on authorize modal
                 abp.swagger.login(loginCallback);
             }
@@ -175,7 +175,7 @@ var abp = abp || {};
         var authorizeButton = document.createElement('button');
         authorizeButton.className = 'btn modal-btn auth authorize button';
         authorizeButton.innerText = 'Login';
-        authorizeButton.onclick = function() {
+        authorizeButton.onclick = function () {
             abp.swagger.login(loginCallback);
         };
         authBtnWrapper.appendChild(authorizeButton);
