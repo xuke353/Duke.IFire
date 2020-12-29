@@ -7,6 +7,7 @@ using AutoMapper;
 using IFire.Auth.Jwt;
 using IFire.Data.EFCore;
 using IFire.Framework.Helpers;
+using IFire.Framework.Providers;
 using IFire.Framework.StartupServices;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -75,6 +76,7 @@ namespace IFire.WebHost {
             if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
             }
+            IocProvider.SetFactory(new IocFactory(app.ApplicationServices));
             app.UseSwagger();
             app.UseSwaggerUI(c => {
                 foreach (var description in provider.ApiVersionDescriptions) {

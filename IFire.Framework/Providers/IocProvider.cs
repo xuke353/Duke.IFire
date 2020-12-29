@@ -6,7 +6,7 @@ namespace IFire.Framework.Providers {
     public class IocProvider {
 
         [MethodImpl(MethodImplOptions.Synchronized)]
-        public static IIocFactory SetProvider(IIocFactory provider) {
+        public static IIocFactory SetFactory(IIocFactory provider) {
             if (Current == null) {
                 Current = provider;
             }

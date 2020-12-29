@@ -23,7 +23,7 @@ namespace IFire.Auth.Jwt {
         }
 
         public IResultModel Hand(List<Claim> claims, string extendData) {
-            var options = _configProvider.Get<AuthConfig>("Auth").Jwt;
+            var options = _configProvider.Get<AuthConfig>().Jwt;
 
             var token = Build(claims, options);
 

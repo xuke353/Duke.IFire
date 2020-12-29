@@ -2,6 +2,6 @@
 
     public interface IConfigProvider {
 
-        TConfig Get<TConfig>(string section = "") where TConfig : IConfig, new();
+        TConfig Get<TConfig>() where TConfig : IConfig, new();
     }
 }

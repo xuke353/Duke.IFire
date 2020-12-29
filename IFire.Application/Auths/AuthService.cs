@@ -115,7 +115,7 @@ namespace IFire.Application.Auths {
                 RefreshToken = resultModel.RefreshToken,
                 RefreshTokenExpiredTime = DateTime.Now.AddDays(7)//默认刷新令牌有效期7天
             };
-            var config = _configProvider.Get<AuthConfig>("Auth");
+            var config = _configProvider.Get<AuthConfig>();
 
             //设置过期时间
             if (config.Jwt.RefreshTokenExpires > 0) {

@@ -1,4 +1,5 @@
-﻿using IFire.Framework.Extensions;
+﻿using IFire.Framework.Attributes;
+using IFire.Framework.Extensions;
 using IFire.Framework.Interfaces;
 
 namespace IFire.Framework.Abstractions {
@@ -6,6 +7,7 @@ namespace IFire.Framework.Abstractions {
     /// <summary>
     /// 缓存配置
     /// </summary>
+    [Section("Cache")]
     public class CacheConfig : IConfig {
 
         /// <summary>

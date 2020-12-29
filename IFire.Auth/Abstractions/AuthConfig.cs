@@ -1,10 +1,12 @@
-﻿using IFire.Framework.Interfaces;
+﻿using IFire.Framework.Attributes;
+using IFire.Framework.Interfaces;
 
 namespace IFire.Auth.Abstractions {
 
     /// <summary>
     /// 身份认证和授权配置
     /// </summary>
+    [Section("Auth")]
     public class AuthConfig : IConfig {
 
         /// <summary>

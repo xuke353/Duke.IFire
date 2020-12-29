@@ -1,4 +1,5 @@
 ﻿using IFire.Framework.Attributes;
+using IFire.Framework.Extensions;
 using IFire.Framework.Interfaces;
 using Microsoft.Extensions.Configuration;
 
@@ -12,9 +13,16 @@ namespace IFire.Framework.Providers {
             _configuration = configuration;
         }
 
-        public TConfig Get<TConfig>(string section = "") where TConfig : IConfig, new() {
+        public TConfig Get<TConfig>() where TConfig : IConfig, new() {
             IConfig config = new TConfig();
-            _configuration.GetSection(string.IsNullOrEmpty(section) ? nameof(TConfig) : section).Bind(config);
+            var section = config.GetType().GetAttribute<SectionAttribute>();
+            var sectionName = nameof(TConfig);
+            if (section != null) {
+                if (!string.IsNullOrEmpty(section.Name)) {
+                    sectionName = section.Name;
+                }
+            }
+            _configuration.GetSection(sectionName).Bind(config);
             return (TConfig)config;
         }
     }

@@ -44,7 +44,7 @@ namespace IFire.WebHost.Controllers {
         /// </summary>
         private IResultModel LoginHandle(LoginResult result) {
             if (result.Success) {
-                var auth = _configProvider.Get<AuthConfig>("Auth");
+                var auth = _configProvider.Get<AuthConfig>();
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.NameIdentifier, result.UserId.ToString()),

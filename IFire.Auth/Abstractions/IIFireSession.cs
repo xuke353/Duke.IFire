@@ -23,6 +23,6 @@
         bool IsAuthenticated { get; }
     }
 
-    public interface IIFireSession : IIFireSession<int> {
+    public interface IIFireSession : IIFireSession<int?> {
     }
 }

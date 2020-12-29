@@ -30,7 +30,7 @@ namespace IFire.WebHost.Controllers {
 
         [HttpGet]
         public IEnumerable<WeatherForecast> Get() {
-            var aa = _configProvider.Get<AuthConfig>("Auth");
+            var aa = _configProvider.Get<AuthConfig>();
             var htmlString = MiniProfiler.Current.RenderIncludes(_accessor.HttpContext);
             var rng = new Random();
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast {

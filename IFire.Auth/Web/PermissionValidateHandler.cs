@@ -21,7 +21,7 @@ namespace IFire.Auth.Web {
         }
 
         public async Task<bool> Validate(IDictionary<string, string> routeValues, string httpMethod) {
-            var permissions = await _permissionResolver.Resolve(_iFireSession.UserId);
+            var permissions = await _permissionResolver.Resolve(_iFireSession.UserId.ToInt());
 
             var controller = routeValues["controller"];
             var action = routeValues["action"];

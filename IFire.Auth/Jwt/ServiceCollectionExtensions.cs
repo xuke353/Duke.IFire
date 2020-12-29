@@ -16,7 +16,7 @@ namespace IFire.Auth.Jwt {
         /// <param name="services"></param>
         public static IServiceCollection AddJwtAuth(this IServiceCollection services) {
             var configProvider = services.BuildServiceProvider().GetService<IConfigProvider>();
-            var jwtConfig = configProvider.Get<AuthConfig>("Auth").Jwt;
+            var jwtConfig = configProvider.Get<AuthConfig>().Jwt;
             services.AddAuthentication(o => {
                 o.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
                 o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;

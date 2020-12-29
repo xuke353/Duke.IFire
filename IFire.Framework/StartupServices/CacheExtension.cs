@@ -15,7 +15,7 @@ namespace IFire.Framework.StartupServices {
         /// <param name="configuration"></param>
         public static void AddCacheService(this IServiceCollection services) {
             var configProvider = services.BuildServiceProvider().GetService<IConfigProvider>();
-            var cacheConfig = configProvider.Get<CacheConfig>("Cache");
+            var cacheConfig = configProvider.Get<CacheConfig>();
 
             if (cacheConfig.Provider == CacheProvider.Redis) {
                 var redis = cacheConfig.Redis;
