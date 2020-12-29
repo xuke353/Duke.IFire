@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using IFire.Auth.Abstractions;
 using IFire.Framework.Attributes;
+using IFire.Framework.CustomExceptions;
 
 namespace IFire.Application.Auths {
 
@@ -10,7 +11,7 @@ namespace IFire.Application.Auths {
     public class UserPermissionResolver : IFireAppServiceBase, IUserPermissionResolver {
 
         public Task<IList<string>> Resolve(int userId) {
-            throw new NotImplementedException();
+            throw new BusinessException("哈哈哈");
         }
 
         public Task<IList<string>> ResolveButtons(Guid userId) {

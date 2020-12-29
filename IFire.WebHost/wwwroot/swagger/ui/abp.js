@@ -1,5 +1,5 @@
 var abp = abp || {};
-(function() {
+(function () {
     /* Application paths *****************************************/
 
     // Current application root path (including virtual directory if exists).
@@ -13,15 +13,15 @@ var abp = abp || {};
     abp.auth.tokenCookieName = 'Abp.AuthToken';
     abp.auth.tokenHeaderName = 'Authorization';
 
-    abp.auth.setToken = function(authToken, expireDate) {
+    abp.auth.setToken = function (authToken, expireDate) {
         abp.utils.setCookieValue(abp.auth.tokenCookieName, authToken, expireDate, abp.appPath);
     };
 
-    abp.auth.getToken = function() {
+    abp.auth.getToken = function () {
         return abp.utils.getCookieValue(abp.auth.tokenCookieName);
     }
 
-    abp.auth.clearToken = function() {
+    abp.auth.clearToken = function () {
         abp.auth.setToken();
     }
 
@@ -38,18 +38,18 @@ var abp = abp || {};
          * @param {Date} expireDate (optional). If not specified the cookie will expire at the end of session.
          * @param {string} path (optional)
          */
-    abp.utils.setCookieValue = function(key, value, expireDate, path) {
+    abp.utils.setCookieValue = function (key, value, expireDate, path) {
         var cookieValue = encodeURIComponent(key) + '=';
 
-        if(value) {
+        if (value) {
             cookieValue = cookieValue + encodeURIComponent(value);
         }
 
-        if(expireDate) {
+        if (expireDate) {
             cookieValue = cookieValue + "; expires=" + expireDate.toUTCString();
         }
 
-        if(path) {
+        if (path) {
             cookieValue = cookieValue + "; path=" + path;
         }
 
@@ -63,19 +63,19 @@ var abp = abp || {};
      * @param {string} key
      * @returns {string} Cookie value or null
      */
-    abp.utils.getCookieValue = function(key) {
+    abp.utils.getCookieValue = function (key) {
         var equalities = document.cookie.split('; ');
-        for(var i = 0; i < equalities.length; i++) {
-            if(!equalities[i]) {
+        for (var i = 0; i < equalities.length; i++) {
+            if (!equalities[i]) {
                 continue;
             }
 
             var splitted = equalities[i].split('=');
-            if(splitted.length != 2) {
+            if (splitted.length != 2) {
                 continue;
             }
 
-            if(decodeURIComponent(splitted[0]) === key) {
+            if (decodeURIComponent(splitted[0]) === key) {
                 return decodeURIComponent(splitted[1] || '');
             }
         }
@@ -90,12 +90,12 @@ var abp = abp || {};
      * @param {string} key
      * @param {string} path (optional)
      */
-    abp.utils.deleteCookie = function(key, path) {
+    abp.utils.deleteCookie = function (key, path) {
         var cookieValue = encodeURIComponent(key) + '=';
 
         cookieValue = cookieValue + "; expires=" + (new Date(new Date().getTime() - 86400000)).toUTCString();
 
-        if(path) {
+        if (path) {
             cookieValue = cookieValue + "; path=" + path;
         }
 
@@ -109,7 +109,7 @@ var abp = abp || {};
     abp.security.antiForgery.tokenCookieName = 'XSRF-TOKEN';
     abp.security.antiForgery.tokenHeaderName = 'X-XSRF-TOKEN';
 
-    abp.security.antiForgery.getToken = function() {
+    abp.security.antiForgery.getToken = function () {
         return abp.utils.getCookieValue(abp.security.antiForgery.tokenCookieName);
     };
 })();

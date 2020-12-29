@@ -8,6 +8,7 @@ using IFire.Framework.Helpers;
 using IFire.Framework.Interfaces;
 using IFire.Framework.Result;
 using IFire.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace IFire.Application.Auths {
@@ -113,7 +114,7 @@ namespace IFire.Application.Auths {
                 UserId = resultModel.UserId,
                 LoginTime = resultModel.LoginTime.ToTimestamp(),
                 RefreshToken = resultModel.RefreshToken,
-                RefreshTokenExpiredTime = DateTime.Now.AddDays(7)//默认刷新令牌有效期7天
+                RefreshTokenExpiredTime = DateTime.UtcNow.AddDays(7)//默认刷新令牌有效期7天
             };
             var config = _configProvider.Get<AuthConfig>();
 
@@ -122,7 +123,7 @@ namespace IFire.Application.Auths {
                 authInfo.RefreshTokenExpiredTime = DateTime.UtcNow.AddDays(config.Jwt.RefreshTokenExpires);
             }
 
-            var entity = await _accountAuthInfoRepository.FirstOrDefaultAsync(t => t.UserId == resultModel.UserId);
+            var entity = await _accountAuthInfoRepository.GetAll().AsNoTracking().FirstOrDefaultAsync(t => t.UserId == resultModel.UserId);
             if (entity != null) {
                 authInfo.Id = entity.Id;
                 await _accountAuthInfoRepository.UpdateAsync(authInfo);

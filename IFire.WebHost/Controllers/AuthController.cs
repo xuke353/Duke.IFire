@@ -11,6 +11,7 @@ using IFire.Framework.Interfaces;
 using IFire.Framework.Result;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace IFire.WebHost.Controllers {
 
@@ -59,6 +60,19 @@ namespace IFire.WebHost.Controllers {
             }
 
             return ResultModel.Failed(result.Error);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        [DisableAuditing]
+        public async Task<IResultModel> RefreshToken([BindRequired] string refreshToken) {
+            var result = await _authService.RefreshToken(refreshToken);
+            return LoginHandle(result);
+        }
+
+        [HttpGet]
+        public Task<IResultModel> AuthInfo() {
+            return _authService.GetAuthInfo();
         }
     }
 }

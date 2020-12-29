@@ -9,6 +9,7 @@ using IFire.Data.EFCore;
 using IFire.Framework.Helpers;
 using IFire.Framework.Providers;
 using IFire.Framework.StartupServices;
+using IFire.WebHost.Middlewares;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
@@ -52,7 +53,7 @@ namespace IFire.WebHost {
                 options.SubstituteApiVersionInUrl = true;
             });
             services.AddHttpContextAccessor();
-            services.AddControllers().AddNewtonsoftJson();
+
             AddSwaggerGen(services);
 
             services.AddDbContext<IFireDbContext>(option => {
@@ -64,6 +65,8 @@ namespace IFire.WebHost {
                     option.EnableSensitiveDataLogging(true);//显示sql参数
                 }
             });
+
+            services.AddControllers().AddNewtonsoftJson();
 
             services.AddMiniProfiler(options => {
                 options.RouteBasePath = "/profiler";
@@ -77,6 +80,8 @@ namespace IFire.WebHost {
                 app.UseDeveloperExceptionPage();
             }
             IocProvider.SetFactory(new IocFactory(app.ApplicationServices));
+            //全局异常处理（在最上面）
+            app.UseExceptionHandle();
             app.UseSwagger();
             app.UseSwaggerUI(c => {
                 foreach (var description in provider.ApiVersionDescriptions) {
