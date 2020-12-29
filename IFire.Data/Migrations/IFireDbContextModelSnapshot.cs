@@ -117,6 +117,20 @@ namespace IFire.Data.Migrations
 
                     b.ToTable("Login_Log");
                 });
+
+            modelBuilder.Entity("IFire.Models.Role", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Role");
+                });
 #pragma warning restore 612, 618
         }
     }

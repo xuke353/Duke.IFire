@@ -20,6 +20,7 @@ namespace IFire.Application.Auths {
         private readonly IPasswordHandler _passwordHandler;
         private readonly IRepository<AccountAuthInfo, int> _accountAuthInfoRepository;
         private readonly ILogger<AuthService> _logger;
+        private readonly IRepository<Role, Guid> _roleRepository;
         private readonly IpHelper _ipHelper;
 
         public AuthService(IConfigProvider configProvider,
@@ -28,6 +29,7 @@ namespace IFire.Application.Auths {
             IPasswordHandler passwordHandler,
             IRepository<AccountAuthInfo, int> accountAuthInfoRepository,
             ILogger<AuthService> logger,
+            IRepository<Role, Guid> roleRepository,
             IpHelper ipHelper) {
             _configProvider = configProvider;
             _accountRepository = accountRepository;
@@ -35,6 +37,7 @@ namespace IFire.Application.Auths {
             _passwordHandler = passwordHandler;
             _accountAuthInfoRepository = accountAuthInfoRepository;
             _logger = logger;
+            _roleRepository = roleRepository;
             _ipHelper = ipHelper;
         }
 
@@ -140,8 +143,9 @@ namespace IFire.Application.Auths {
             return Guid.NewGuid().ToString().Replace("-", "");
         }
 
-        public Task<IResultModel> GetAuthInfo() {
-            throw new NotImplementedException();
+        public Task GetAuthInfo() {
+            _roleRepository.InsertAsync(new Role { Name = "张三" });
+            return Task.CompletedTask;
         }
 
         public Task<AccountAuthInfo> GetAuthInfo(int userId) {

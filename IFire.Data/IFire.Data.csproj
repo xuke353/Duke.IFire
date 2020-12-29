@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\IFire.Auth\IFire.Auth.csproj" />
     <ProjectReference Include="..\IFire.Domain\IFire.Domain.csproj" />
     <ProjectReference Include="..\IFire.Models\IFire.Models.csproj" />
   </ItemGroup>

@@ -71,7 +71,7 @@ namespace IFire.WebHost.Controllers {
         }
 
         [HttpGet]
-        public Task<IResultModel> AuthInfo() {
+        public Task AuthInfo() {
             return _authService.GetAuthInfo();
         }
     }
