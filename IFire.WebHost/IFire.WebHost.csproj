@@ -43,8 +43,6 @@
     <ProjectReference Include="..\IFire.Application\IFire.Application.csproj" />
     <ProjectReference Include="..\IFire.Auth\IFire.Auth.csproj" />
     <ProjectReference Include="..\IFire.Data\IFire.Data.csproj" />
-    <ProjectReference Include="..\IFire.Domain\IFire.Domain.csproj" />
-    <ProjectReference Include="..\IFire.Framework\IFire.Framework.csproj" />
   </ItemGroup>
 
   <ItemGroup>
