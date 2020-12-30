@@ -15,6 +15,11 @@ namespace IFire.Auth.Abstractions {
         public bool Validate { get; set; }
 
         /// <summary>
+        /// 开启审计日志
+        /// </summary>
+        public bool Auditing { get; set; }
+
+        /// <summary>
         /// Jwt配置
         /// </summary>
         public JwtConfig Jwt { get; set; } = new JwtConfig();

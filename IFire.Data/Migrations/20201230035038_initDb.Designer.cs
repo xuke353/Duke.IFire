@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IFire.Data.Migrations
 {
     [DbContext(typeof(IFireDbContext))]
-    [Migration("20201229133652_initDb")]
+    [Migration("20201230035038_initDb")]
     partial class initDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,6 +54,19 @@ namespace IFire.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Account");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Deleted = false,
+                            IsLock = false,
+                            Name = "管理员",
+                            Password = "F0DD923B1DB060E4DFB4AA10CB855FBA",
+                            Status = 1,
+                            Type = 1,
+                            Username = "xuke"
+                        });
                 });
 
             modelBuilder.Entity("IFire.Models.AccountAuthInfo", b =>
@@ -82,6 +95,56 @@ namespace IFire.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Account_Auth_Info");
+                });
+
+            modelBuilder.Entity("IFire.Models.AuditInfo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Action")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100) CHARACTER SET utf8mb4");
+
+                    b.Property<string>("BrowserInfo")
+                        .HasMaxLength(1000)
+                        .HasColumnType("varchar(1000) CHARACTER SET utf8mb4");
+
+                    b.Property<string>("ClientIp")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100) CHARACTER SET utf8mb4");
+
+                    b.Property<string>("Controller")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100) CHARACTER SET utf8mb4");
+
+                    b.Property<string>("Exception")
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500) CHARACTER SET utf8mb4");
+
+                    b.Property<int>("ExecutionDuration")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ExecutionTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Parameters")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("Result")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Username")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50) CHARACTER SET utf8mb4");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AuditInfo");
                 });
 
             modelBuilder.Entity("IFire.Models.LoginLog", b =>

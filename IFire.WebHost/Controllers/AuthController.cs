@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using IFire.Application.Auths;
 using IFire.Application.Auths.Dto;
 using IFire.Auth.Abstractions;
-using IFire.Framework.Attributes;
+using IFire.Auth.Web;
 using IFire.Framework.Interfaces;
 using IFire.Framework.Result;
 using Microsoft.AspNetCore.Authorization;
@@ -15,8 +15,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace IFire.WebHost.Controllers {
 
-    [AllowAnonymous]
-    public class AuthController : ControllerAbstract {
+    public class AuthController : IFireControllerBase {
         private readonly IAuthService _authService;
         private readonly ILoginHandler _loginHandler;
         private readonly IConfigProvider _configProvider;

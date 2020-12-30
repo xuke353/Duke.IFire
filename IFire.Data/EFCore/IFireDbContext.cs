@@ -14,6 +14,7 @@ namespace IFire.Data.EFCore {
         public DbSet<Account> Accounts { get; set; }
         public DbSet<AccountAuthInfo> AccountAuthInfos { get; set; }
         public DbSet<LoginLog> LoginLogs { get; set; }
+        public DbSet<AuditInfo> AuditInfos { get; set; }
 
         public DbSet<Role> Roles { get; set; }
 
@@ -22,6 +23,20 @@ namespace IFire.Data.EFCore {
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
+            modelBuilder.Entity<Account>().HasData(new Account[]
+           {
+                new Account {
+                    Id = 1,
+                    Name = "管理员",
+                    Username = "xuke",
+                    Password = "F0DD923B1DB060E4DFB4AA10CB855FBA",//a123456
+                    IsLock = false,
+                    Deleted = false,
+                    Status = Models.Enums.AccountStatus.激活,
+                    Type = Models.Enums.AccountType.管理员
+                }
+           });
+            ;
             base.OnModelCreating(modelBuilder);
         }
 

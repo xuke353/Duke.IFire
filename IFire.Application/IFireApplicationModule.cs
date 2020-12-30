@@ -1,5 +1,7 @@
 ﻿using Autofac;
 using Autofac.Extras.DynamicProxy;
+using IFire.Application.Auths.Web;
+using IFire.Auth.Abstractions;
 using IFire.Data.EFCore.Uow;
 
 namespace IFire.Application {
@@ -7,6 +9,7 @@ namespace IFire.Application {
     public class IFireApplicationModule : Module {
 
         protected override void Load(ContainerBuilder builder) {
+            builder.RegisterType<AuditingHandler>().As<IAuditingHandler>();
             builder.RegisterType<UnitOfWorkInterceptor>().AsSelf();
             builder.RegisterAssemblyTypes(ThisAssembly)
             .Where(m => m.Name.EndsWith("Service"))

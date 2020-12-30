@@ -5,7 +5,7 @@ using IFire.Auth.Abstractions;
 using IFire.Framework.Attributes;
 using IFire.Framework.Extensions;
 
-namespace IFire.Auth.Web {
+namespace IFire.Application.Auths.Web {
 
     /// <summary>
     /// 权限验证

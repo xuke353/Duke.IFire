@@ -47,11 +47,6 @@ namespace IFire.WebHost {
             services.AddJwtAuth();
             services.AddCacheService();
             services.AddAutoMapper(Assembly.Load("IFire.Application"));
-            services.AddVersionedApiExplorer(options => {
-                options.GroupNameFormat = "'v'VVV";
-                // 注意: 只有在通过url段进行版本控制时，才需要此选项。替代格式还可以用于控制路由模板中API版本的格式。
-                options.SubstituteApiVersionInUrl = true;
-            });
             services.AddHttpContextAccessor();
 
             AddSwaggerGen(services);
@@ -89,7 +84,7 @@ namespace IFire.WebHost {
                         $"/swagger/{description.GroupName}/swagger.json",
                         description.GroupName.ToUpperInvariant());
                 }
-                c.IndexStream = () => Assembly.GetExecutingAssembly().GetManifestResourceStream("IFire.WebHost.wwwroot.swagger.ui.index.html");
+                c.IndexStream = () => GetType().GetTypeInfo().Assembly.GetManifestResourceStream("IFire.WebHost.wwwroot.swagger.ui.index.html");
             });
             app.UseStaticFiles();
             app.UseRouting();
@@ -105,16 +100,16 @@ namespace IFire.WebHost {
         }
 
         private static void AddSwaggerGen(IServiceCollection services) {
+            services.AddApiVersioning(option => option.ReportApiVersions = true);
             services.AddSwaggerGen(c => {
                 var provider = services.BuildServiceProvider().GetRequiredService<IApiVersionDescriptionProvider>();
                 foreach (var description in provider.ApiVersionDescriptions) {
                     c.SwaggerDoc(description.GroupName, new OpenApiInfo {
                         Title = "Duke.IFire API",
-                        Version = description.ApiVersion.ToString(),
+                        Version = description.GroupName,
                         Description = @"<a target=""_blank"" href=""https://github.com/xuke353/AdmBoots"">GitHub</a> &nbsp; <a target=""_blank"" href=""/healthchecks-ui"">健康检查</a> &nbsp; <code>Powered by .NET5</code>"
                     });
                 }
-                c.DocInclusionPredicate((_, _) => true);
                 c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme() {
                     Description = "JWT认证请求头格式: \"Authorization: Bearer {token}\"",
                     Name = "Authorization",
@@ -132,7 +127,7 @@ namespace IFire.WebHost {
                 c.IncludeXmlComments(Path.Combine(basePath, "IFire.Application.xml"));
                 c.IncludeXmlComments(Path.Combine(basePath, "IFire.WebHost.xml"));
             });
-            services.AddApiVersioning(option => option.ReportApiVersions = true);
+
             services.AddVersionedApiExplorer(options => {
                 options.GroupNameFormat = "'v'VVV";
                 // 注意: 只有在通过url段进行版本控制时，才需要此选项。替代格式还可以用于控制路由模板中API版本的格式。

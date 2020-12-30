@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using IFire.Auth.Abstractions;
+using IFire.Auth.Web;
 using IFire.Framework.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,8 +11,8 @@ using StackExchange.Profiling;
 
 namespace IFire.WebHost.Controllers {
 
-    [Route("api/v{version:apiVersion}/test")]
-    public class WeatherForecastController : ControllerAbstract {
+    [ApiVersion("2.0")]
+    public class WeatherForecastController : IFireControllerBase {
 
         private static readonly string[] Summaries = new[]
         {

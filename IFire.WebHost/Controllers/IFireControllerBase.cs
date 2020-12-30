@@ -10,6 +10,7 @@ namespace IFire.WebHost.Controllers {
     [Route("api/v{version:apiVersion}/[controller]/[action]")]
     [ApiController]
     [PermissionValidate]
-    public abstract class ControllerAbstract : ControllerBase {
+    [Auditing]
+    public abstract class IFireControllerBase : ControllerBase {
     }
 }

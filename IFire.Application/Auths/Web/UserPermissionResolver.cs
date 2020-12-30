@@ -4,14 +4,23 @@ using System.Threading.Tasks;
 using IFire.Auth.Abstractions;
 using IFire.Framework.Attributes;
 using IFire.Framework.CustomExceptions;
+using Microsoft.Extensions.Caching.Distributed;
 
-namespace IFire.Application.Auths {
+namespace IFire.Application.Auths.Web {
 
     [Transient]
     public class UserPermissionResolver : IFireAppServiceBase, IUserPermissionResolver {
+        private readonly IDistributedCache _cache;
 
-        public Task<IList<string>> Resolve(int userId) {
-            throw new BusinessException("哈哈哈");
+        public UserPermissionResolver(IDistributedCache cache) {
+            _cache = cache;
+        }
+
+        public async Task<IList<string>> Resolve(int userId) {
+            var list = new List<string> {
+                "WeatherForecast_Get_Get"
+            };
+            return list;
         }
 
         public Task<IList<string>> ResolveButtons(Guid userId) {

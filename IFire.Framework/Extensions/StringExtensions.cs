@@ -82,5 +82,35 @@ namespace IFire.Framework.Extensions {
             var bytes = encoding.GetBytes(s);
             return Convert.ToBase64String(bytes);
         }
+
+        /// <summary>
+        /// 截取指定长度字符串
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="maxLength"></param>
+        /// <returns></returns>
+        public static string TruncateWithPostfix(this string str, int maxLength) {
+            return TruncateWithPostfix(str, maxLength, "...");
+        }
+
+        public static string TruncateWithPostfix(this string str, int maxLength, string postfix) {
+            if (str == null) {
+                return null;
+            }
+
+            if (str == string.Empty || maxLength == 0) {
+                return string.Empty;
+            }
+
+            if (str.Length <= maxLength) {
+                return str;
+            }
+
+            if (maxLength <= postfix.Length) {
+                return postfix.Substring(0, maxLength);
+            }
+
+            return str.Substring(0, maxLength - postfix.Length) + postfix;
+        }
     }
 }
