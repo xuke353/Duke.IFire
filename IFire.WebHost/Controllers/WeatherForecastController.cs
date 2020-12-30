@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using IFire.Auth.Abstractions;
-using IFire.Auth.Web;
 using IFire.Framework.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

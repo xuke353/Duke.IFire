@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using IFire.Auth.Abstractions;
 using IFire.Framework.Attributes;
-using IFire.Framework.CustomExceptions;
 using Microsoft.Extensions.Caching.Distributed;
 
 namespace IFire.Application.Auths.Web {

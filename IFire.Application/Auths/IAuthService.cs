@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using IFire.Application.Auths.Dto;
-using IFire.Framework.Result;
 using IFire.Models;
 
 namespace IFire.Application.Auths {

@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using IFire.Application.Auths.Dto;
 using IFire.Auth.Abstractions;
+using IFire.Domain;
 using IFire.Domain.RepositoryIntefaces;
 using IFire.Framework.Extensions;
 using IFire.Framework.Helpers;
@@ -9,6 +10,7 @@ using IFire.Framework.Interfaces;
 using IFire.Framework.Result;
 using IFire.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 
 namespace IFire.Application.Auths {
@@ -22,6 +24,8 @@ namespace IFire.Application.Auths {
         private readonly ILogger<AuthService> _logger;
         private readonly IRepository<Role, Guid> _roleRepository;
         private readonly IpHelper _ipHelper;
+        private readonly DateTimeHelper _dateTimeHelper;
+        private readonly IDistributedCache _cache;
 
         public AuthService(IConfigProvider configProvider,
             IRepository<Account, int> accountRepository,
@@ -30,7 +34,9 @@ namespace IFire.Application.Auths {
             IRepository<AccountAuthInfo, int> accountAuthInfoRepository,
             ILogger<AuthService> logger,
             IRepository<Role, Guid> roleRepository,
-            IpHelper ipHelper) {
+            IpHelper ipHelper,
+            DateTimeHelper dateTimeHelper,
+            IDistributedCache cache) {
             _configProvider = configProvider;
             _accountRepository = accountRepository;
             _loginLogRepository = loginLogRepository;
@@ -39,6 +45,8 @@ namespace IFire.Application.Auths {
             _logger = logger;
             _roleRepository = roleRepository;
             _ipHelper = ipHelper;
+            _dateTimeHelper = dateTimeHelper;
+            _cache = cache;
         }
 
         public async Task<LoginResult> Login(LoginInput input) {
@@ -152,8 +160,45 @@ namespace IFire.Application.Auths {
             throw new NotImplementedException();
         }
 
-        public Task<LoginResult> RefreshToken(string refreshToken) {
-            throw new NotImplementedException();
+        public async Task<LoginResult> RefreshToken(string refreshToken) {
+            var result = new LoginResult();
+            var cacheKey = CacheKeys.AUTH_REFRESH_TOKEN + refreshToken;
+            if (!_cache.TryGetValue(cacheKey, out AccountAuthInfo authInfo)) {
+                authInfo = await _accountAuthInfoRepository.FirstOrDefaultAsync(g => g.RefreshToken == refreshToken);
+                if (authInfo == null) {
+                    result.Error = "身份认证信息无效，请重新登录~";
+                    return result;
+                }
+
+                //加入缓存
+                var expires = (int)(authInfo.RefreshTokenExpiredTime - DateTime.Now).TotalMinutes;
+                await _cache.SetAsync(cacheKey, authInfo, new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(expires) });
+            }
+
+            if (authInfo.RefreshTokenExpiredTime <= DateTime.Now) {
+                result.Error = "身份认证信息过期，请重新登录~";
+                return result;
+            }
+
+            var account = await _accountRepository.FirstOrDefaultAsync(g => g.Id == authInfo.UserId);
+            if (account == null) {
+                result.Error = "账户信息不存在~";
+                return result;
+            }
+            var checkAccountResult = account.Check();
+            if (!checkAccountResult.Successful) {
+                result.Error = checkAccountResult.Msg;
+                return result;
+            }
+
+            result.Success = true;
+            result.UserId = account.Id;
+            result.AccountType = account.Type;
+            result.Username = account.Username;
+            result.Name = account.Name;
+            result.RefreshToken = authInfo.RefreshToken;
+            result.LoginTime = _dateTimeHelper.TimeStamp2DateTime(authInfo.LoginTime);
+            return result;
         }
     }
 }
