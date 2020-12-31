@@ -21,6 +21,11 @@
         /// 是否认证
         /// </summary>
         bool IsAuthenticated { get; }
+
+        /// <summary>
+        /// 登录时间
+        /// </summary>
+        public long LoginTime { get; }
     }
 
     public interface IIFireSession : IIFireSession<int?> {

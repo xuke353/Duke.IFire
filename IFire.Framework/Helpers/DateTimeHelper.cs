@@ -5,7 +5,6 @@ using IFire.Framework.Extensions;
 
 namespace IFire.Framework.Helpers {
 
-    [Singleton]
     public class DateTimeHelper {
 
         /// <summary>
@@ -18,7 +17,7 @@ namespace IFire.Framework.Helpers {
         /// </summary>
         /// <param name="milliseconds">是否使用毫秒</param>
         /// <returns></returns>
-        public string GetTimeStamp(bool milliseconds = false) {
+        public static string GetTimeStamp(bool milliseconds = false) {
             var ts = DateTime.UtcNow - TimestampStart;
             return Convert.ToInt64(milliseconds ? ts.TotalMilliseconds : ts.TotalSeconds).ToString();
         }
@@ -29,7 +28,7 @@ namespace IFire.Framework.Helpers {
         /// <param name="timestamp">时间戳</param>
         /// <param name="milliseconds">是否使用毫秒</param>
         /// <returns></returns>
-        public DateTime TimeStamp2DateTime(long timestamp, bool milliseconds = false) {
+        public static DateTime TimeStamp2DateTime(long timestamp, bool milliseconds = false) {
             var value = milliseconds ? 10000 : 10000000;
             return TimestampStart.AddTicks(timestamp * value);
         }
@@ -37,7 +36,7 @@ namespace IFire.Framework.Helpers {
         /// <summary>判断当前年份是否是闰年</summary>
         /// <param name="year">年份</param>
         /// <returns></returns>
-        private bool IsLeapYear(int year) {
+        private static bool IsLeapYear(int year) {
             int n = year;
             if ((n % 400 == 0) || (n % 4 == 0 && n % 100 != 0)) {
                 return true;
@@ -49,7 +48,7 @@ namespace IFire.Framework.Helpers {
         /// 获取周几
         /// </summary>
         /// <returns></returns>
-        public string GetWeek() {
+        public static string GetWeek() {
             var dayOfWeek = DateTime.Now.DayOfWeek.ToInt();
             string week;
             switch (dayOfWeek) {

@@ -4,6 +4,7 @@ using IFire.Application.Auths.Dto;
 using IFire.Auth.Abstractions;
 using IFire.Domain;
 using IFire.Domain.RepositoryIntefaces;
+using IFire.Framework.CustomExceptions;
 using IFire.Framework.Extensions;
 using IFire.Framework.Helpers;
 using IFire.Framework.Interfaces;
@@ -24,8 +25,8 @@ namespace IFire.Application.Auths {
         private readonly ILogger<AuthService> _logger;
         private readonly IRepository<Role, Guid> _roleRepository;
         private readonly IpHelper _ipHelper;
-        private readonly DateTimeHelper _dateTimeHelper;
         private readonly IDistributedCache _cache;
+        private readonly IUserPermissionResolver _permissionResolver;
 
         public AuthService(IConfigProvider configProvider,
             IRepository<Account, int> accountRepository,
@@ -35,8 +36,8 @@ namespace IFire.Application.Auths {
             ILogger<AuthService> logger,
             IRepository<Role, Guid> roleRepository,
             IpHelper ipHelper,
-            DateTimeHelper dateTimeHelper,
-            IDistributedCache cache) {
+            IDistributedCache cache,
+            IUserPermissionResolver permissionResolver) {
             _configProvider = configProvider;
             _accountRepository = accountRepository;
             _loginLogRepository = loginLogRepository;
@@ -45,8 +46,8 @@ namespace IFire.Application.Auths {
             _logger = logger;
             _roleRepository = roleRepository;
             _ipHelper = ipHelper;
-            _dateTimeHelper = dateTimeHelper;
             _cache = cache;
+            _permissionResolver = permissionResolver;
         }
 
         public async Task<LoginResult> Login(LoginInput input) {
@@ -141,6 +142,9 @@ namespace IFire.Application.Auths {
             } else {
                 await _accountAuthInfoRepository.InsertAsync(authInfo);
             }
+
+            //清除账户的认证信息缓存
+            await _cache.RemoveAsync($"{CacheKeys.ACCOUNT_AUTH_INFO}{resultModel.UserId}");
         }
 
         /// <summary>
@@ -151,13 +155,40 @@ namespace IFire.Application.Auths {
             return Guid.NewGuid().ToString().Replace("-", "");
         }
 
-        public Task GetAuthInfo() {
-            _roleRepository.InsertAsync(new Role { Name = "张三" });
-            return Task.CompletedTask;
+        public async Task<AuthInfoOutput> GetAuthInfo() {
+            var account = await _accountRepository.FirstOrDefaultAsync(g => g.Id == IFireSession.UserId);
+            if (account == null)
+                throw new BusinessException("账户不存在");
+
+            var result = account.Check();
+            //检测账户状态
+            if (!result.Successful)
+                throw new BusinessException(result.Msg);
+
+            var output = new AuthInfoOutput {
+                Id = account.Id,
+                Type = account.Type,
+                Username = account.Username,
+                Name = account.Name,
+            };
+            // var getMenuTree = _permissionResolver.ResolveMenus(_loginInfo.AccountId);
+            var getPageCodes = _permissionResolver.ResolvePages(IFireSession.UserId.ToInt());
+            var getButtonCodes = _permissionResolver.ResolveButtons(IFireSession.UserId.ToInt());
+
+            // model.Menus = await getMenuTree;
+            output.Pages = await getPageCodes;
+            output.Buttons = await getButtonCodes;
+            return output;
         }
 
-        public Task<AccountAuthInfo> GetAuthInfo(int userId) {
-            throw new NotImplementedException();
+        public async Task<AccountAuthInfo> GetAuthInfo(int userId) {
+            if (!_cache.TryGetValue($"{CacheKeys.ACCOUNT_AUTH_INFO}{userId}", out AccountAuthInfo authInfo)) {
+                authInfo = await _accountAuthInfoRepository.FirstOrDefaultAsync(t => t.UserId == userId);
+                if (authInfo == null)
+                    return null;
+            }
+
+            return authInfo;
         }
 
         public async Task<LoginResult> RefreshToken(string refreshToken) {
@@ -197,7 +228,7 @@ namespace IFire.Application.Auths {
             result.Username = account.Username;
             result.Name = account.Name;
             result.RefreshToken = authInfo.RefreshToken;
-            result.LoginTime = _dateTimeHelper.TimeStamp2DateTime(authInfo.LoginTime);
+            result.LoginTime = DateTimeHelper.TimeStamp2DateTime(authInfo.LoginTime);
             return result;
         }
     }

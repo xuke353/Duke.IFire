@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using IFire.Auth.Abstractions;
 using IFire.Framework.Attributes;
 using IFire.Framework.Extensions;
@@ -21,10 +22,21 @@ namespace IFire.Auth.Web {
             }
         }
 
-        public string Name => _claimsIdentity.Name;
+        public string Name => _claimsIdentity?.Name;
 
-        public string Username => _claimsIdentity.FindFirst(ClaimsName.Username)?.Value;
+        public string Username => _claimsIdentity?.FindFirst(ClaimsName.Username)?.Value;
 
-        public bool IsAuthenticated => _claimsIdentity.IsAuthenticated;
+        public bool IsAuthenticated => _claimsIdentity != null && _claimsIdentity.IsAuthenticated;
+
+        /// <summary>
+        /// 登录时间
+        /// </summary>
+        public long LoginTime {
+            get {
+                var ty = _claimsIdentity?.FindFirst(JwtRegisteredClaimNames.AuthTime)?.Value;
+
+                return ty != null ? ty.ToDateTime().ToTimestamp() : 0L;
+            }
+        }
     }
 }

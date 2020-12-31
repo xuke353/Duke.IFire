@@ -25,13 +25,13 @@ namespace IFire.Auth.Abstractions {
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        Task<IList<string>> ResolvePages(Guid userId);
+        Task<IList<string>> ResolvePages(int userId);
 
         /// <summary>
         /// 解析按钮编码列表
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        Task<IList<string>> ResolveButtons(Guid userId);
+        Task<IList<string>> ResolveButtons(int userId);
     }
 }

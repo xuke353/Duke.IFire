@@ -22,11 +22,11 @@ namespace IFire.Application.Auths.Web {
             return list;
         }
 
-        public Task<IList<string>> ResolveButtons(Guid userId) {
+        public Task<IList<string>> ResolveButtons(int userId) {
             throw new NotImplementedException();
         }
 
-        public Task<IList<string>> ResolvePages(Guid userId) {
+        public Task<IList<string>> ResolvePages(int userId) {
             throw new NotImplementedException();
         }
     }

@@ -20,6 +20,11 @@ namespace IFire.Auth.Abstractions {
         public bool Auditing { get; set; }
 
         /// <summary>
+        /// 开启单账户登录
+        /// </summary>
+        public bool SingleAccount { get; set; }
+
+        /// <summary>
         /// Jwt配置
         /// </summary>
         public JwtConfig Jwt { get; set; } = new JwtConfig();

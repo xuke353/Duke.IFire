@@ -27,6 +27,16 @@ namespace IFire.Auth.Web {
             if (!config.Validate)
                 return;
 
+            //是否启用单账户登录
+            if (config.SingleAccount) {
+                var singleAccountLoginHandler = context.HttpContext.RequestServices.GetService<ISingleAccountLoginHandler>();
+                if (singleAccountLoginHandler != null && await singleAccountLoginHandler.Validate()) {
+                    context.Result = new ContentResult();
+                    context.HttpContext.Response.StatusCode = 622;//自定义状态码来判断是否是在其他地方登录
+                    return;
+                }
+            }
+
             //未登录
             var loginInfo = context.HttpContext.User?.Identity.IsAuthenticated;
             if (loginInfo != true) {
