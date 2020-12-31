@@ -61,13 +61,26 @@ namespace IFire.WebHost {
                 }
             });
 
-            services.AddControllers().AddNewtonsoftJson();
+            services.AddControllers().AddNewtonsoftJson(options => {
+                //设置日期格式化格式
+                options.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
+            });
 
             services.AddMiniProfiler(options => {
                 options.RouteBasePath = "/profiler";
             }).AddEntityFramework();
             //API URL转小写
             services.AddRouting(options => options.LowercaseUrls = true);
+
+            services.AddCors(options => {
+                options.AddPolicy("Default",
+                    builder =>
+                    builder.SetIsOriginAllowed(origin => true)//允许所有 origin 来源
+                                                              //.WithOrigins(Configuration["Startup:Cors"].Split(','))
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials());
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApiVersionDescriptionProvider provider) {
@@ -94,6 +107,8 @@ namespace IFire.WebHost {
             //授权
             app.UseAuthorization();
             app.UseMiniProfiler();
+            //跨域
+            app.UseCors("Default");
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllers();
             });
