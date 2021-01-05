@@ -13,9 +13,9 @@ namespace IFire.Application.Auths.Web {
     [Singleton]
     public class PermissionValidateHandler : IPermissionValidateHandler {
         private readonly IIFireSession _iFireSession;
-        private readonly IUserPermissionResolver _permissionResolver;
+        private readonly IAccountPermissionResolver _permissionResolver;
 
-        public PermissionValidateHandler(IIFireSession iFireSession, IUserPermissionResolver permissionResolver) {
+        public PermissionValidateHandler(IIFireSession iFireSession, IAccountPermissionResolver permissionResolver) {
             _iFireSession = iFireSession;
             _permissionResolver = permissionResolver;
         }

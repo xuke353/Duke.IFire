@@ -8,7 +8,7 @@ using Microsoft.Extensions.Caching.Distributed;
 namespace IFire.Application.Auths.Web {
 
     [Transient]
-    public class AccountPermissionResolver : IFireAppServiceBase, IUserPermissionResolver {
+    public class AccountPermissionResolver : IFireAppServiceBase, IAccountPermissionResolver {
         private readonly IDistributedCache _cache;
 
         public AccountPermissionResolver(IDistributedCache cache) {

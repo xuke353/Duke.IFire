@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace IFire.Auth.Abstractions {
 
-    public interface IUserPermissionResolver {
+    public interface IAccountPermissionResolver {
 
         /// <summary>
         /// 解析

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using System.Threading.Tasks;
 using IFire.Auth.Abstractions;
 using IFire.Framework.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -32,6 +33,15 @@ namespace IFire.Auth.Jwt {
                        ValidIssuer = jwtConfig.Issuer,
                        ValidAudience = jwtConfig.Audience,
                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig.Key))
+                   };
+                   options.Events = new JwtBearerEvents {
+                       OnAuthenticationFailed = context => {
+                           // 如果过期，则把<是否过期>添加到，返回头信息中
+                           if (context.Exception.GetType() == typeof(SecurityTokenExpiredException)) {
+                               context.Response.Headers.Add("Token-Expired", "true");
+                           }
+                           return Task.CompletedTask;
+                       }
                    };
                });
 

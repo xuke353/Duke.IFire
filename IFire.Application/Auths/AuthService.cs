@@ -26,7 +26,7 @@ namespace IFire.Application.Auths {
         private readonly IRepository<Role, Guid> _roleRepository;
         private readonly IpHelper _ipHelper;
         private readonly IDistributedCache _cache;
-        private readonly IUserPermissionResolver _permissionResolver;
+        private readonly IAccountPermissionResolver _permissionResolver;
 
         public AuthService(IConfigProvider configProvider,
             IRepository<Account, int> accountRepository,
@@ -37,7 +37,7 @@ namespace IFire.Application.Auths {
             IRepository<Role, Guid> roleRepository,
             IpHelper ipHelper,
             IDistributedCache cache,
-            IUserPermissionResolver permissionResolver) {
+            IAccountPermissionResolver permissionResolver) {
             _configProvider = configProvider;
             _accountRepository = accountRepository;
             _loginLogRepository = loginLogRepository;
