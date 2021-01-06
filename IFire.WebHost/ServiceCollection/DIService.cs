@@ -5,29 +5,9 @@ using IFire.Framework.Attributes;
 using IFire.Framework.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace IFire.Framework.StartupServices {
+namespace IFire.WebHost.ServiceCollection {
 
-    public static class DIExtension {
-
-        /// <summary>
-        /// 注册按约定命名的接口类
-        /// </summary>
-        /// <param name="services"></param>
-        /// <param name="assembly">程序集</param>
-        /// <param name="fullNameEnd">特定字符串结尾</param>
-        public static IServiceCollection AddImplementedInterfaceServices(this IServiceCollection services, string assemblyName, string endTypeName) {
-            Check.NotNull(assemblyName, nameof(assemblyName), "注册失败，未找到程序集");
-            var assembly = AssemblyHelper.LoadByNameEndString(assemblyName);
-            var types = assembly.GetTypes();
-            var interfaces = types.Where(t => t.FullName != null && t.IsInterface && t.FullName.EndsWith(endTypeName, StringComparison.OrdinalIgnoreCase));
-            foreach (var serviceType in interfaces) {
-                var implementationType = types.FirstOrDefault(m => m != serviceType && serviceType.IsAssignableFrom(m));
-                if (implementationType != null) {
-                    services.Add(new ServiceDescriptor(serviceType, implementationType, ServiceLifetime.Transient));
-                }
-            }
-            return services;
-        }
+    public static class DIService {
 
         /// <summary>
         /// 从指定程序集中注入服务
@@ -128,6 +108,7 @@ namespace IFire.Framework.StartupServices {
         /// 注入特定程序集服务
         /// </summary>
         /// <param name="services"></param>
+        /// <param name="assemblies"></param>
         /// <returns></returns>
         public static IServiceCollection RegisterAssemblyServices(this IServiceCollection services, params Assembly[] assemblies) {
             foreach (var assembly in assemblies) {

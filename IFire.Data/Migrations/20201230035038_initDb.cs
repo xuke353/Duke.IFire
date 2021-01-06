@@ -2,16 +2,14 @@
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace IFire.Data.Migrations
-{
-    public partial class initDb : Migration
-    {
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
+namespace IFire.Data.Migrations {
+
+    public partial class initDb : Migration {
+
+        protected override void Up(MigrationBuilder migrationBuilder) {
             migrationBuilder.CreateTable(
                 name: "Account",
-                columns: table => new
-                {
+                columns: table => new {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Username = table.Column<string>(type: "varchar(50) CHARACTER SET utf8mb4", maxLength: 50, nullable: false),
@@ -22,15 +20,13 @@ namespace IFire.Data.Migrations
                     IsLock = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     Deleted = table.Column<bool>(type: "tinyint(1)", nullable: false)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("PK_Account", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Account_Auth_Info",
-                columns: table => new
-                {
+                columns: table => new {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     UserId = table.Column<int>(type: "int", nullable: false),
@@ -39,15 +35,13 @@ namespace IFire.Data.Migrations
                     LoginTime = table.Column<long>(type: "bigint", nullable: false),
                     LoginIP = table.Column<string>(type: "varchar(50) CHARACTER SET utf8mb4", maxLength: 50, nullable: true)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("PK_Account_Auth_Info", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "AuditInfo",
-                columns: table => new
-                {
+                columns: table => new {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     UserId = table.Column<int>(type: "int", nullable: true),
@@ -62,15 +56,13 @@ namespace IFire.Data.Migrations
                     BrowserInfo = table.Column<string>(type: "varchar(1000) CHARACTER SET utf8mb4", maxLength: 1000, nullable: true),
                     Exception = table.Column<string>(type: "varchar(500) CHARACTER SET utf8mb4", maxLength: 500, nullable: true)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("PK_AuditInfo", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Login_Log",
-                columns: table => new
-                {
+                columns: table => new {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     UserId = table.Column<int>(type: "int", nullable: true),
@@ -81,20 +73,17 @@ namespace IFire.Data.Migrations
                     Error = table.Column<string>(type: "varchar(2000) CHARACTER SET utf8mb4", maxLength: 2000, nullable: true),
                     UserAgent = table.Column<string>(type: "varchar(1000) CHARACTER SET utf8mb4", maxLength: 1000, nullable: true)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("PK_Login_Log", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Role",
-                columns: table => new
-                {
+                columns: table => new {
                     Id = table.Column<Guid>(type: "char(36)", nullable: false),
                     Name = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("PK_Role", x => x.Id);
                 });
 
@@ -104,8 +93,7 @@ namespace IFire.Data.Migrations
                 values: new object[] { 1, false, false, "管理员", "F0DD923B1DB060E4DFB4AA10CB855FBA", 1, 1, "xuke" });
         }
 
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
+        protected override void Down(MigrationBuilder migrationBuilder) {
             migrationBuilder.DropTable(
                 name: "Account");
 

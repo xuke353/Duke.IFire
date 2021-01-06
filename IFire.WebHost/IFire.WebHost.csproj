@@ -54,8 +54,4 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="ServiceCollection\" />
-  </ItemGroup>
 </Project>

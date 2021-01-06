@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
 using Autofac;
 using AutoMapper;
@@ -8,8 +7,8 @@ using IFire.Auth.Jwt;
 using IFire.Data.EFCore;
 using IFire.Framework.Helpers;
 using IFire.Framework.Providers;
-using IFire.Framework.StartupServices;
 using IFire.WebHost.Middlewares;
+using IFire.WebHost.ServiceCollection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
@@ -18,8 +17,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.Filters;
 
 namespace IFire.WebHost {
 
@@ -48,12 +45,10 @@ namespace IFire.WebHost {
             services.AddCacheService();
             services.AddAutoMapper(Assembly.Load("IFire.Application"));
             services.AddHttpContextAccessor();
-
-            AddSwaggerGen(services);
+            services.AddSwaggerGen();
 
             services.AddDbContext<IFireDbContext>(option => {
-                option.UseMySql(DbOptions.ConnectionString, new MySqlServerVersion(new Version(DbOptions.Version)),
-                    p => p.MigrationsAssembly("IFire.Data"));
+                option.UseMySql(DbOptions.ConnectionString, new MySqlServerVersion(new Version(DbOptions.Version)));
                 if (Environment.IsDevelopment()) {
                     //打印sql
                     option.UseLoggerFactory(EFLoggerFactory);
@@ -111,42 +106,6 @@ namespace IFire.WebHost {
             app.UseCors("Default");
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllers();
-            });
-        }
-
-        private static void AddSwaggerGen(IServiceCollection services) {
-            services.AddApiVersioning(option => option.ReportApiVersions = true);
-            services.AddSwaggerGen(c => {
-                var provider = services.BuildServiceProvider().GetRequiredService<IApiVersionDescriptionProvider>();
-                foreach (var description in provider.ApiVersionDescriptions) {
-                    c.SwaggerDoc(description.GroupName, new OpenApiInfo {
-                        Title = "Duke.IFire API",
-                        Version = description.GroupName,
-                        Description = @"<a target=""_blank"" href=""https://github.com/xuke353/AdmBoots"">GitHub</a> &nbsp; <a target=""_blank"" href=""/healthchecks-ui"">健康检查</a> &nbsp; <code>Powered by .NET5</code>"
-                    });
-                }
-                c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme() {
-                    Description = "JWT认证请求头格式: \"Authorization: Bearer {token}\"",
-                    Name = "Authorization",
-                    In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.ApiKey
-                });
-
-                // 开启加权小锁
-                c.OperationFilter<AddResponseHeadersFilter>();
-                c.OperationFilter<AppendAuthorizeToSummaryOperationFilter>();
-                //启用oauth2安全授权访问api接口
-                c.OperationFilter<SecurityRequirementsOperationFilter>();
-
-                var basePath = AppContext.BaseDirectory;
-                c.IncludeXmlComments(Path.Combine(basePath, "IFire.Application.xml"));
-                c.IncludeXmlComments(Path.Combine(basePath, "IFire.WebHost.xml"));
-            });
-
-            services.AddVersionedApiExplorer(options => {
-                options.GroupNameFormat = "'v'VVV";
-                // 注意: 只有在通过url段进行版本控制时，才需要此选项。替代格式还可以用于控制路由模板中API版本的格式。
-                options.SubstituteApiVersionInUrl = true;
             });
         }
     }

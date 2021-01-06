@@ -2,6 +2,7 @@
 using System.Text;
 using System.Threading.Tasks;
 using IFire.Auth.Abstractions;
+using IFire.Auth.Web;
 using IFire.Framework.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
@@ -46,7 +47,7 @@ namespace IFire.Auth.Jwt {
                });
 
             //注入权限集合
-            //services.AddScoped<PermissionCollection>();
+            services.AddScoped<PermissionCollection>();
 
             return services;
         }

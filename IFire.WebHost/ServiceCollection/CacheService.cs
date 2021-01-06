@@ -4,15 +4,14 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
 
-namespace IFire.Framework.StartupServices {
+namespace IFire.WebHost.ServiceCollection {
 
-    public static class CacheExtension {
+    public static class CacheService {
 
         /// <summary>
         /// 分布式缓存 注入接口IDistributedCache
         /// </summary>
         /// <param name="services"></param>
-        /// <param name="configuration"></param>
         public static void AddCacheService(this IServiceCollection services) {
             var configProvider = services.BuildServiceProvider().GetService<IConfigProvider>();
             var cacheConfig = configProvider.Get<CacheConfig>();
