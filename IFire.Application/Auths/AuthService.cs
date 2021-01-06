@@ -53,7 +53,7 @@ namespace IFire.Application.Auths {
         public async Task<LoginResult> Login(LoginInput input) {
             var loginResult = new LoginResult() {
                 Username = input.Username,
-                LoginTime = DateTime.Now
+                LoginTime = DateTime.UtcNow
             };
             //检测
             var checkResult = await Check(input, loginResult);

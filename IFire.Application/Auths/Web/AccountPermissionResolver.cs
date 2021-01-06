@@ -17,7 +17,7 @@ namespace IFire.Application.Auths.Web {
 
         public async Task<IList<string>> Resolve(int userId) {
             var list = new List<string> {
-                "WeatherForecast_Get_Get"
+                "WeatherForecast_Get_Get", "Permission_Tree_Get"
             };
             return list;
         }

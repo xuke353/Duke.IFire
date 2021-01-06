@@ -48,8 +48,8 @@ namespace IFire.WebHost.Controllers {
                     new Claim(ClaimTypes.NameIdentifier, result.UserId.ToString()),
                     new Claim(ClaimTypes.Name, result.Name),
                     new Claim(ClaimsName.Username, result.Username),
-                    new Claim(ClaimTypes.Expiration, DateTime.UtcNow.AddSeconds(auth.Jwt.Expires * 60).ToString()),
-                    new Claim(JwtRegisteredClaimNames.AuthTime, DateTime.UtcNow.ToString("o")),
+                    new Claim(ClaimTypes.Expiration, result.LoginTime.AddSeconds(auth.Jwt.Expires * 60).ToString()),
+                    new Claim(JwtRegisteredClaimNames.AuthTime, result.LoginTime.ToString("o")),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64)
                 };
