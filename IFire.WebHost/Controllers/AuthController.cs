@@ -70,8 +70,8 @@ namespace IFire.WebHost.Controllers {
 
         [HttpGet]
         [Description("获取认证信息")]
-        public Task AuthInfo() {
-            return _authService.GetAuthInfo();
+        public async Task<IResultModel> AuthInfo() {
+            return ResultModel.Success(await _authService.GetAuthInfo());
         }
     }
 }

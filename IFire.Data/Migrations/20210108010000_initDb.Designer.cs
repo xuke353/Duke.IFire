@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IFire.Data.Migrations
 {
     [DbContext(typeof(IFireDbContext))]
-    [Migration("20201230035038_initDb")]
+    [Migration("20210108010000_initDb")]
     partial class initDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -65,7 +65,7 @@ namespace IFire.Data.Migrations
                             Password = "F0DD923B1DB060E4DFB4AA10CB855FBA",
                             Status = 1,
                             Type = 1,
-                            Username = "xuke"
+                            Username = "admin"
                         });
                 });
 
@@ -95,6 +95,31 @@ namespace IFire.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Account_Auth_Info");
+                });
+
+            modelBuilder.Entity("IFire.Models.AccountRole", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Account_Role");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            RoleId = 1,
+                            UserId = 1
+                        });
                 });
 
             modelBuilder.Entity("IFire.Models.AuditInfo", b =>
@@ -144,7 +169,7 @@ namespace IFire.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AuditInfo");
+                    b.ToTable("Audit_Info");
                 });
 
             modelBuilder.Entity("IFire.Models.LoginLog", b =>
@@ -183,6 +208,55 @@ namespace IFire.Data.Migrations
                     b.ToTable("Login_Log");
                 });
 
+            modelBuilder.Entity("IFire.Models.Menu", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Code")
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200) CHARACTER SET utf8mb4");
+
+                    b.Property<string>("Icon")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50) CHARACTER SET utf8mb4");
+
+                    b.Property<int>("Level")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50) CHARACTER SET utf8mb4");
+
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Remarks")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("Route")
+                        .HasMaxLength(300)
+                        .HasColumnType("varchar(300) CHARACTER SET utf8mb4");
+
+                    b.Property<bool>("Show")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<int>("Sort")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Url")
+                        .HasMaxLength(300)
+                        .HasColumnType("varchar(300) CHARACTER SET utf8mb4");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Menu");
+                });
+
             modelBuilder.Entity("IFire.Models.Role", b =>
                 {
                     b.Property<Guid>("Id")
@@ -190,11 +264,71 @@ namespace IFire.Data.Migrations
                         .HasColumnType("char(36)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100) CHARACTER SET utf8mb4");
+
+                    b.Property<string>("Remarks")
+                        .HasMaxLength(300)
+                        .HasColumnType("varchar(300) CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
 
                     b.ToTable("Role");
+                });
+
+            modelBuilder.Entity("IFire.Models.RoleMenu", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("MenuId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Role_Menu");
+                });
+
+            modelBuilder.Entity("IFire.Models.RolePermission", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("PermissionCode")
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200) CHARACTER SET utf8mb4");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Role_Permission");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            PermissionCode = "WeatherForecast_Get_Get",
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            PermissionCode = "Permission_Tree_Get",
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            PermissionCode = "Auth_AuthInfo_Get",
+                            RoleId = 1
+                        });
                 });
 #pragma warning restore 612, 618
         }

@@ -1,17 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using IFire.Application.Auths.Web;
-using IFire.Framework.Abstractions;
+﻿using System.Collections.Generic;
 
-namespace IFire.Models {
+namespace IFire.Application.Auths.Web {
 
-    [Table("Menu")]
-    public class Menu : Entity {
+    public class AccountMenuItem {
+        public int Id { get; set; }
 
         /// <summary>
-        /// 页面编码
+        /// 编码
         /// </summary>
-        [MaxLength(200)]
         public string Code { get; set; }
 
         /// <summary>
@@ -27,25 +23,21 @@ namespace IFire.Models {
         /// <summary>
         /// 名称
         /// </summary>
-        [MaxLength(50)]
         public string Name { get; set; }
 
         /// <summary>
         /// 路由
         /// </summary>
-        [MaxLength(300)]
         public string Route { get; set; }
 
         /// <summary>
         /// 链接
         /// </summary>
-        [MaxLength(300)]
         public string Url { get; set; }
 
         /// <summary>
         /// 图标
         /// </summary>
-        [MaxLength(50)]
         public string Icon { get; set; }
 
         /// <summary>
@@ -64,9 +56,18 @@ namespace IFire.Models {
         public int Sort { get; set; }
 
         /// <summary>
-        /// 备注
+        /// 子菜单
         /// </summary>
-        [MaxLength]
-        public string Remarks { get; set; }
+        public List<AccountMenuItem> Children { get; set; }
+    }
+
+    /// <summary>
+    /// 菜单类型
+    /// </summary>
+    public enum MenuType {
+        未知 = 1,
+        节点 = 2,
+        路由 = 3,
+        链接 = 4
     }
 }

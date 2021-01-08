@@ -9,19 +9,19 @@ using IFire.Framework.Abstractions;
 namespace IFire.Models {
 
     /// <summary>
-    /// 账户角色
+    /// 角色菜单
     /// </summary>
-    [Table("Account_Role")]
-    public class AccountRole : Entity<int> {
-
-        /// <summary>
-        /// 账户编号
-        /// </summary>
-        public int UserId { get; set; }
+    [Table("Role_Menu")]
+    public partial class RoleMenu : Entity<int> {
 
         /// <summary>
         /// 角色编号
         /// </summary>
         public int RoleId { get; set; }
+
+        /// <summary>
+        /// 菜单编号
+        /// </summary>
+        public int MenuId { get; set; }
     }
 }

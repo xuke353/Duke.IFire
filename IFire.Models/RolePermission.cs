@@ -11,7 +11,7 @@ namespace IFire.Models {
         /// <summary>
         /// 角色
         /// </summary>
-        public Guid RoleId { get; set; }
+        public int RoleId { get; set; }
 
         /// <summary>
         /// 权限编码

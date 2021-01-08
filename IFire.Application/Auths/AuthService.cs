@@ -155,7 +155,7 @@ namespace IFire.Application.Auths {
             return Guid.NewGuid().ToString().Replace("-", "");
         }
 
-        public async Task<AuthInfoOutput> GetAuthInfo() {
+        public async Task<AuthInfo> GetAuthInfo() {
             var account = await _accountRepository.FirstOrDefaultAsync(g => g.Id == IFireSession.UserId);
             if (account == null)
                 throw new BusinessException("账户不存在");
@@ -165,19 +165,14 @@ namespace IFire.Application.Auths {
             if (!result.Successful)
                 throw new BusinessException(result.Msg);
 
-            var output = new AuthInfoOutput {
+            var output = new AuthInfo {
                 Id = account.Id,
                 Type = account.Type,
                 Username = account.Username,
                 Name = account.Name,
             };
-            // var getMenuTree = _permissionResolver.ResolveMenus(_loginInfo.AccountId);
-            var getPageCodes = _permissionResolver.ResolvePages(IFireSession.UserId.ToInt());
-            var getButtonCodes = _permissionResolver.ResolveButtons(IFireSession.UserId.ToInt());
 
-            // model.Menus = await getMenuTree;
-            output.Pages = await getPageCodes;
-            output.Buttons = await getButtonCodes;
+            output.Menus = await _permissionResolver.ResolveMenus(IFireSession.UserId.ToInt());
             return output;
         }
 

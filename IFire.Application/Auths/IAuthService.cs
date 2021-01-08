@@ -24,7 +24,7 @@ namespace IFire.Application.Auths {
         /// 获取认证信息
         /// </summary>
         /// <returns></returns>
-        Task<AuthInfoOutput> GetAuthInfo();
+        Task<AuthInfo> GetAuthInfo();
 
         /// <summary>
         /// 查询指定账户的认证信息(缓存优先)

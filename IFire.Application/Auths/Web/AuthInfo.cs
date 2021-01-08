@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using IFire.Application.Auths.Web;
 using IFire.Models.Enums;
 
 namespace IFire.Application.Auths.Dto {
 
-    public class AuthInfoOutput {
+    public class AuthInfo {
 
         /// <summary>
         /// 账户标识
@@ -28,17 +29,7 @@ namespace IFire.Application.Auths.Dto {
         /// <summary>
         /// 菜单列表
         /// </summary>
-       // public IList<AccountMenuItem> Menus { get; set; }
-
-        /// <summary>
-        /// 页面编码列表
-        /// </summary>
-        public IList<string> Pages { get; set; }
-
-        /// <summary>
-        /// 按钮编码列表
-        /// </summary>
-        public IList<string> Buttons { get; set; }
+        public IList<AccountMenuItem> Menus { get; set; }
 
         /// <summary>
         /// 详情信息(用于扩展登录对象信息)
