@@ -19,21 +19,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IFire.Application", "IFire.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IFire.Data", "IFire.Data\IFire.Data.csproj", "{D7696700-AC6B-48CB-B602-B508E81AFED7}"
 EndProject
-<<<<<<< HEAD
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IFire.Domain", "IFire.Domain\IFire.Domain.csproj", "{697EDF34-ADCF-4DA5-954F-AC9258714E18}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IFire.Framework", "IFire.Framework\IFire.Framework.csproj", "{079E3CB3-796D-420D-A40C-53A2BA574706}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IFire.CodeGenerator", "IFire.CodeGenerator\IFire.CodeGenerator.csproj", "{FB4D5E16-0A8D-47C2-A4CD-FD7E368E423E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IFire.CodeGenerator", "IFire.CodeGenerator\IFire.CodeGenerator.csproj", "{FB4D5E16-0A8D-47C2-A4CD-FD7E368E423E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IFire.Model", "IFire.Model\IFire.Model.csproj", "{8B2EC295-1457-491C-9D35-5C69C850ED2A}"
-=======
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IFire.Models", "IFire.Models\IFire.Models.csproj", "{FEABEE01-CB46-4BDF-BC57-ECA1D2877642}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IFire.Domain", "IFire.Domain\IFire.Domain.csproj", "{697EDF34-ADCF-4DA5-954F-AC9258714E18}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IFire.Framework", "IFire.Framework\IFire.Framework.csproj", "{079E3CB3-796D-420D-A40C-53A2BA574706}"
->>>>>>> e464dff2ff0ceec4109a3552cc8bbe71793d65e5
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IFire.Model", "IFire.Model\IFire.Model.csproj", "{8B2EC295-1457-491C-9D35-5C69C850ED2A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

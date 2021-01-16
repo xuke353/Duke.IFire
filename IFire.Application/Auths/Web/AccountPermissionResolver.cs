@@ -7,10 +7,10 @@ using IFire.Framework.Attributes;
 using IFire.Framework.Extensions;
 using Microsoft.Extensions.Caching.Distributed;
 using IFire.Domain.RepositoryIntefaces;
-using IFire.Models;
+using IFire.Model;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using IFire.Models.Enums;
+using IFire.Model.Enums;
 
 namespace IFire.Application.Auths.Web {
 
