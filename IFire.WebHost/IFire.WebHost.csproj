@@ -42,6 +42,7 @@
   <ItemGroup>
     <ProjectReference Include="..\IFire.Application\IFire.Application.csproj" />
     <ProjectReference Include="..\IFire.Auth\IFire.Auth.csproj" />
+    <ProjectReference Include="..\IFire.CodeGenerator\IFire.CodeGenerator.csproj" />
     <ProjectReference Include="..\IFire.Data\IFire.Data.csproj" />
   </ItemGroup>
 

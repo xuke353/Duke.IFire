@@ -3,9 +3,9 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using IFire.Framework.Abstractions;
 using IFire.Framework.Result;
-using IFire.Models.Enums;
+using IFire.Model.Enums;
 
-namespace IFire.Models {
+namespace IFire.Model {
 
     /// <summary>
     /// 账户

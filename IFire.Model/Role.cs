@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using IFire.Framework.Abstractions;
 
-namespace IFire.Models {
+namespace IFire.Model {
 
     [Table("Role")]
     public class Role : Entity<Guid> {

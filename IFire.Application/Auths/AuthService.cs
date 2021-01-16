@@ -9,7 +9,7 @@ using IFire.Framework.Extensions;
 using IFire.Framework.Helpers;
 using IFire.Framework.Interfaces;
 using IFire.Framework.Result;
-using IFire.Models;
+using IFire.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
@@ -24,7 +24,6 @@ namespace IFire.Application.Auths {
         private readonly IRepository<AccountAuthInfo, int> _accountAuthInfoRepository;
         private readonly ILogger<AuthService> _logger;
         private readonly IRepository<Role, Guid> _roleRepository;
-        private readonly IpHelper _ipHelper;
         private readonly IDistributedCache _cache;
         private readonly IUserPermissionResolver _permissionResolver;
 
@@ -35,7 +34,6 @@ namespace IFire.Application.Auths {
             IRepository<AccountAuthInfo, int> accountAuthInfoRepository,
             ILogger<AuthService> logger,
             IRepository<Role, Guid> roleRepository,
-            IpHelper ipHelper,
             IDistributedCache cache,
             IUserPermissionResolver permissionResolver) {
             _configProvider = configProvider;
@@ -45,7 +43,6 @@ namespace IFire.Application.Auths {
             _accountAuthInfoRepository = accountAuthInfoRepository;
             _logger = logger;
             _roleRepository = roleRepository;
-            _ipHelper = ipHelper;
             _cache = cache;
             _permissionResolver = permissionResolver;
         }
@@ -107,8 +104,8 @@ namespace IFire.Application.Auths {
                     Error = result.Error,
                     LoginTime = result.LoginTime,
                     Success = result.Success,
-                    IP = _ipHelper.IP,
-                    UserAgent = _ipHelper.UserAgent
+                    IP = NetHelper.ClientIP,
+                    UserAgent = NetHelper.UserAgent
                 };
                 await _loginLogRepository.InsertAsync(entity);
             } catch (Exception ex) {

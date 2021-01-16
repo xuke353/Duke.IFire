@@ -2,7 +2,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using IFire.Auth.Abstractions;
-using IFire.Models;
+using IFire.Model;
+using IFire.Model.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
@@ -32,8 +33,8 @@ namespace IFire.Data.EFCore {
                     Password = "F0DD923B1DB060E4DFB4AA10CB855FBA",//a123456
                     IsLock = false,
                     Deleted = false,
-                    Status = Models.Enums.AccountStatus.激活,
-                    Type = Models.Enums.AccountType.管理员
+                    Status = AccountStatus.激活,
+                    Type = AccountType.管理员
                 }
            });
             ;

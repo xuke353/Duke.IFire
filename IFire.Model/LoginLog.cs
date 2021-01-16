@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using IFire.Framework.Abstractions;
 
-namespace IFire.Models {
+namespace IFire.Model {
 
     [Table("Login_Log")]
     public class LoginLog : Entity {

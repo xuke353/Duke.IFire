@@ -1,4 +1,4 @@
-﻿namespace IFire.Models.Enums {
+﻿namespace IFire.Model.Enums {
 
     /// <summary>
     /// 账户类型

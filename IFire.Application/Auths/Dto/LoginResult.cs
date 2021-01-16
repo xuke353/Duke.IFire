@@ -1,5 +1,5 @@
 ﻿using System;
-using IFire.Models.Enums;
+using IFire.Model.Enums;
 
 namespace IFire.Application.Auths.Dto {
 

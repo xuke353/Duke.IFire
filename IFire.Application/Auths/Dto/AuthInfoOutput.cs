@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using IFire.Models.Enums;
+using IFire.Model.Enums;
 
 namespace IFire.Application.Auths.Dto {
 

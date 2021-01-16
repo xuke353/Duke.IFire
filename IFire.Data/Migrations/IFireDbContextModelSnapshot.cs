@@ -17,7 +17,7 @@ namespace IFire.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
                 .HasAnnotation("ProductVersion", "5.0.1");
 
-            modelBuilder.Entity("IFire.Models.Account", b =>
+            modelBuilder.Entity("IFire.Model.Account", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -67,7 +67,7 @@ namespace IFire.Data.Migrations
                         });
                 });
 
-            modelBuilder.Entity("IFire.Models.AccountAuthInfo", b =>
+            modelBuilder.Entity("IFire.Model.AccountAuthInfo", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -95,7 +95,7 @@ namespace IFire.Data.Migrations
                     b.ToTable("Account_Auth_Info");
                 });
 
-            modelBuilder.Entity("IFire.Models.AuditInfo", b =>
+            modelBuilder.Entity("IFire.Model.AuditInfo", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -145,7 +145,7 @@ namespace IFire.Data.Migrations
                     b.ToTable("AuditInfo");
                 });
 
-            modelBuilder.Entity("IFire.Models.LoginLog", b =>
+            modelBuilder.Entity("IFire.Model.LoginLog", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -181,7 +181,7 @@ namespace IFire.Data.Migrations
                     b.ToTable("Login_Log");
                 });
 
-            modelBuilder.Entity("IFire.Models.Role", b =>
+            modelBuilder.Entity("IFire.Model.Role", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()

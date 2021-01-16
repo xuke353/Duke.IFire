@@ -1,4 +1,4 @@
-﻿using IFire.Models;
+﻿using IFire.Model;
 
 namespace IFire.Application.AuditInfos.Dto {
 

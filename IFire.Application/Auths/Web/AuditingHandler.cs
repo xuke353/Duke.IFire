@@ -7,7 +7,7 @@ using IFire.Auth.Abstractions;
 using IFire.Framework.Attributes;
 using IFire.Framework.Extensions;
 using IFire.Framework.Interfaces;
-using IFire.Models;
+using IFire.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;

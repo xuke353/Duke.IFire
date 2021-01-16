@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using IFire.Application.AuditInfos.Dto;
 using IFire.Domain.RepositoryIntefaces;
 using IFire.Framework.Abstractions;
-using IFire.Models;
+using IFire.Model;
 
 namespace IFire.Application.AuditInfos {
 
