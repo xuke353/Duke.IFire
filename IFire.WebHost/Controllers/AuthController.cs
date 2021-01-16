@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -15,6 +16,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace IFire.WebHost.Controllers {
 
+    [Description("身份认证")]
     public class AuthController : IFireControllerBase {
         private readonly IAuthService _authService;
         private readonly ILoginHandler _loginHandler;
@@ -26,17 +28,13 @@ namespace IFire.WebHost.Controllers {
             _configProvider = configProvider;
         }
 
-        /// <summary>
-        /// 登陆
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
         [DisableAuditing]
-        public async Task<IActionResult> Login(LoginInput input) {
+        [Description("登陆")]
+        public async Task<IResultModel> Login(LoginInput input) {
             var result = await _authService.Login(input);
-            return Ok(LoginHandle(result));
+            return LoginHandle(result);
         }
 
         /// <summary>
@@ -50,8 +48,8 @@ namespace IFire.WebHost.Controllers {
                     new Claim(ClaimTypes.NameIdentifier, result.UserId.ToString()),
                     new Claim(ClaimTypes.Name, result.Name),
                     new Claim(ClaimsName.Username, result.Username),
-                    new Claim(ClaimTypes.Expiration, DateTime.UtcNow.AddSeconds(auth.Jwt.Expires * 60).ToString()),
-                    new Claim(JwtRegisteredClaimNames.AuthTime, DateTime.UtcNow.ToString("o")),
+                    new Claim(ClaimTypes.Expiration, result.LoginTime.AddSeconds(auth.Jwt.Expires * 60).ToString()),
+                    new Claim(JwtRegisteredClaimNames.AuthTime, result.LoginTime.ToString("o")),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64)
                 };
@@ -64,14 +62,16 @@ namespace IFire.WebHost.Controllers {
         [HttpGet]
         [AllowAnonymous]
         [DisableAuditing]
+        [Description("刷新token")]
         public async Task<IResultModel> RefreshToken([BindRequired] string refreshToken) {
             var result = await _authService.RefreshToken(refreshToken);
             return LoginHandle(result);
         }
 
         [HttpGet]
-        public Task AuthInfo() {
-            return _authService.GetAuthInfo();
+        [Description("获取认证信息")]
+        public async Task<IResultModel> AuthInfo() {
+            return ResultModel.Success(await _authService.GetAuthInfo());
         }
     }
 }

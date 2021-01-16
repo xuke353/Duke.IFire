@@ -44,6 +44,10 @@ namespace IFire.Auth.Web {
                 return;
             }
 
+            //排除通用接口
+            if (context.ActionDescriptor.EndpointMetadata.Any(m => m.GetType() == typeof(CommonAttribute)))
+                return;
+
             //var httpMethod = (HttpMethod)Enum.Parse(typeof(HttpMethod), context.HttpContext.Request.Method);
             var httpMethod = context.HttpContext.Request.Method;
             var handler = context.HttpContext.RequestServices.GetService<IPermissionValidateHandler>();

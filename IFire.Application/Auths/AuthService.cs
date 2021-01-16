@@ -25,7 +25,7 @@ namespace IFire.Application.Auths {
         private readonly ILogger<AuthService> _logger;
         private readonly IRepository<Role, Guid> _roleRepository;
         private readonly IDistributedCache _cache;
-        private readonly IUserPermissionResolver _permissionResolver;
+        private readonly IAccountPermissionResolver _permissionResolver;
 
         public AuthService(IConfigProvider configProvider,
             IRepository<Account, int> accountRepository,
@@ -35,7 +35,7 @@ namespace IFire.Application.Auths {
             ILogger<AuthService> logger,
             IRepository<Role, Guid> roleRepository,
             IDistributedCache cache,
-            IUserPermissionResolver permissionResolver) {
+            IAccountPermissionResolver permissionResolver) {
             _configProvider = configProvider;
             _accountRepository = accountRepository;
             _loginLogRepository = loginLogRepository;
@@ -50,7 +50,7 @@ namespace IFire.Application.Auths {
         public async Task<LoginResult> Login(LoginInput input) {
             var loginResult = new LoginResult() {
                 Username = input.Username,
-                LoginTime = DateTime.Now
+                LoginTime = DateTime.UtcNow
             };
             //检测
             var checkResult = await Check(input, loginResult);
@@ -152,7 +152,7 @@ namespace IFire.Application.Auths {
             return Guid.NewGuid().ToString().Replace("-", "");
         }
 
-        public async Task<AuthInfoOutput> GetAuthInfo() {
+        public async Task<AuthInfo> GetAuthInfo() {
             var account = await _accountRepository.FirstOrDefaultAsync(g => g.Id == IFireSession.UserId);
             if (account == null)
                 throw new BusinessException("账户不存在");
@@ -162,19 +162,14 @@ namespace IFire.Application.Auths {
             if (!result.Successful)
                 throw new BusinessException(result.Msg);
 
-            var output = new AuthInfoOutput {
+            var output = new AuthInfo {
                 Id = account.Id,
                 Type = account.Type,
                 Username = account.Username,
                 Name = account.Name,
             };
-            // var getMenuTree = _permissionResolver.ResolveMenus(_loginInfo.AccountId);
-            var getPageCodes = _permissionResolver.ResolvePages(IFireSession.UserId.ToInt());
-            var getButtonCodes = _permissionResolver.ResolveButtons(IFireSession.UserId.ToInt());
 
-            // model.Menus = await getMenuTree;
-            output.Pages = await getPageCodes;
-            output.Buttons = await getButtonCodes;
+            output.Menus = await _permissionResolver.ResolveMenus(IFireSession.UserId.ToInt());
             return output;
         }
 

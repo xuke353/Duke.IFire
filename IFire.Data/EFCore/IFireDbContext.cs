@@ -18,6 +18,9 @@ namespace IFire.Data.EFCore {
         public DbSet<AuditInfo> AuditInfos { get; set; }
 
         public DbSet<Role> Roles { get; set; }
+        public DbSet<Menu> Menus { get; set; }
+        public DbSet<RoleMenu> RoleMenus { get; set; }
+        public DbSet<RolePermission> RolePermissions { get; set; }
 
         public IFireDbContext(IIFireSession iFireSession, DbContextOptions<IFireDbContext> options) : base(options) {
             IFireSession = iFireSession;
@@ -29,7 +32,7 @@ namespace IFire.Data.EFCore {
                 new Account {
                     Id = 1,
                     Name = "管理员",
-                    Username = "xuke",
+                    Username = "admin",
                     Password = "F0DD923B1DB060E4DFB4AA10CB855FBA",//a123456
                     IsLock = false,
                     Deleted = false,
@@ -37,7 +40,32 @@ namespace IFire.Data.EFCore {
                     Type = AccountType.管理员
                 }
            });
-            ;
+            modelBuilder.Entity<RolePermission>().HasData(new RolePermission[]
+            {
+                new RolePermission {
+                    Id = 1,
+                    PermissionCode ="WeatherForecast_Get_Get",
+                    RoleId = 1
+                },
+                new RolePermission {
+                    Id = 2,
+                    PermissionCode ="Permission_Tree_Get",
+                    RoleId = 1
+                },
+                new RolePermission {
+                    Id = 3,
+                    PermissionCode ="Auth_AuthInfo_Get",
+                    RoleId = 1
+                }
+            });
+            modelBuilder.Entity<AccountRole>().HasData(new AccountRole[]
+            {
+                new AccountRole {
+                    Id = 1,
+                    UserId = 1,
+                    RoleId = 1
+                },
+            });
             base.OnModelCreating(modelBuilder);
         }
 

@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\IFire.Auth\IFire.Auth.csproj" />
     <ProjectReference Include="..\IFire.Framework\IFire.Framework.csproj" />
   </ItemGroup>
 </Project>

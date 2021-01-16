@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using IFire.Framework.Attributes;
 using IFire.Framework.Extensions;
 
 namespace IFire.Framework.Helpers {
