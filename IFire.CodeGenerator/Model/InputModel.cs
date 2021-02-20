@@ -23,7 +23,7 @@ namespace IFire.CodeGenerator.Model {
         /// <summary>
         /// 作者
         /// </summary>
-        public string Creator { get; set; }
+        public string CreatorName { get; set; }
 
         /// <summary>
         /// 是否创建Entity

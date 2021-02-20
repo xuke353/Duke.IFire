@@ -2,26 +2,29 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using IFire.Framework.Extensions;
 using IFire.Framework.Providers;
 using Microsoft.AspNetCore.Hosting;
 
 namespace IFire.CodeGenerator.Model {
 
     public class FileConfigModel {
+        public string TableName { get; set; }
         public string ClassPrefix { get; set; }
         public string Description { get; set; }
-        public string Creator { get; set; }
+        public string CreatorName { get; set; }
         public string CreateDate { get; set; }
 
-        public string EntityName { get; set; }
+        public string LowerClassPrefix => ClassPrefix.FirstCharToLower();
+        public string EntityName => ClassPrefix;
 
-        public string ServiceName { get; set; }
+        public string ServiceName => $"{ClassPrefix}Service";
 
-        public string ControllerName { get; set; }
+        public string ControllerName => $"{ClassPrefix}Controller";
 
-        public string DtoGetInputName { get; set; }
-        public string DtoGetOutputName { get; set; }
-        public string DtoUpdateInputName { get; set; }
+        public string DtoGetInputName => $"Get{ClassPrefix}Input";
+        public string DtoGetOutputName => $"Get{ClassPrefix}Output";
+        public string DtoUpdateInputName => $"Update{ClassPrefix}Input";
 
         public OutputConfigModel Output => new OutputConfigModel(ClassPrefix);
     }
