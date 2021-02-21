@@ -309,7 +309,7 @@ namespace IFire.CodeGenerator.Template {
 
         #region CreateCode
 
-        public async Task<List<KeyValue>> CreateCode(InputModel inputModel) {
+        public List<KeyValue> CreateCode(InputModel inputModel, DataTable dt) {
             var result = new List<KeyValue>();
             var baseConfigModel = MapToFileConfig(inputModel);
 
@@ -317,6 +317,7 @@ namespace IFire.CodeGenerator.Template {
 
             if (inputModel.CreateEntity) {
                 var codePath = Path.Combine(baseConfigModel.Output.EntityPath, baseConfigModel.EntityName + ".cs");
+                var codeEntity = BuildEntity(baseConfigModel, dt);
                 if (!File.Exists(codePath)) {
                     FileHelper.CreateFile(codePath, codeEntity);
                     result.Add(new KeyValue { Key = "实体类", Value = codePath });
@@ -325,50 +326,30 @@ namespace IFire.CodeGenerator.Template {
 
             #endregion 实体类
 
-            #region 实体查询类
-
-            if (!param["CodeEntityParam"].IsEmpty()) {
-                string codeListEntity = HttpUtility.HtmlDecode(param["CodeEntityParam"].ToString());
-                string codePath = Path.Combine(baseConfigModel.OutputConfig.OutputEntity, "YiSha.Model", "Param", baseConfigModel.OutputConfig.OutputModule, baseConfigModel.FileConfig.EntityParamName + ".cs");
-                if (!File.Exists(codePath)) {
-                    FileHelper.CreateFile(codePath, codeListEntity);
-                    result.Add(new KeyValue { Key = "实体查询类", Value = codePath });
-                }
-            }
-
-            #endregion 实体查询类
-
             #region 服务类
 
-            if (!param["CodeService"].IsEmpty()) {
-                string codeService = HttpUtility.HtmlDecode(param["CodeService"].ToString());
-                string codePath = Path.Combine(baseConfigModel.OutputConfig.OutputBusiness, "YiSha.Service", baseConfigModel.OutputConfig.OutputModule, baseConfigModel.FileConfig.ServiceName + ".cs");
-                if (!File.Exists(codePath)) {
-                    FileHelper.CreateFile(codePath, codeService);
-                    result.Add(new KeyValue { Key = "服务类", Value = codePath });
+            if (inputModel.CreateService) {
+                var codeIService = BuildIService(baseConfigModel);
+                var codeService = BuildService(baseConfigModel);
+                var codeServicePath = Path.Combine(baseConfigModel.Output.ServicePath, baseConfigModel.ServiceName + ".cs");
+                var codeIServicePath = Path.Combine(baseConfigModel.Output.ServicePath, "I" + baseConfigModel.ServiceName + ".cs");
+                if (!File.Exists(codeServicePath)) {
+                    FileHelper.CreateFile(codeServicePath, codeService);
+                    result.Add(new KeyValue { Key = "服务类", Value = codeServicePath });
+                }
+                if (!File.Exists(codeIServicePath)) {
+                    FileHelper.CreateFile(codeIServicePath, codeService);
+                    result.Add(new KeyValue { Key = "服务接口", Value = codeIServicePath });
                 }
             }
 
             #endregion 服务类
 
-            #region 业务类
-
-            if (!param["CodeBusiness"].IsEmpty()) {
-                string codeBusiness = HttpUtility.HtmlDecode(param["CodeBusiness"].ToString());
-                string codePath = Path.Combine(baseConfigModel.OutputConfig.OutputBusiness, "YiSha.Business", baseConfigModel.OutputConfig.OutputModule, baseConfigModel.FileConfig.BusinessName + ".cs");
-                if (!File.Exists(codePath)) {
-                    FileHelper.CreateFile(codePath, codeBusiness);
-                    result.Add(new KeyValue { Key = "业务类", Value = codePath });
-                }
-            }
-
-            #endregion 业务类
-
             #region 控制器
 
-            if (!param["CodeController"].IsEmpty()) {
-                string codeController = HttpUtility.HtmlDecode(param["CodeController"].ToString());
-                string codePath = Path.Combine(baseConfigModel.OutputConfig.OutputWeb, "Areas", baseConfigModel.OutputConfig.OutputModule, "Controllers", baseConfigModel.FileConfig.ControllerName + ".cs");
+            if (inputModel.CreateCotroller) {
+                var codeController = BuildController(baseConfigModel);
+                var codePath = Path.Combine(baseConfigModel.Output.ControllerPath, baseConfigModel.ControllerName + ".cs");
                 if (!File.Exists(codePath)) {
                     FileHelper.CreateFile(codePath, codeController);
                     result.Add(new KeyValue { Key = "控制器", Value = codePath });
@@ -377,73 +358,10 @@ namespace IFire.CodeGenerator.Template {
 
             #endregion 控制器
 
-            #region 列表页
-
-            if (!param["CodeIndex"].IsEmpty()) {
-                string codeIndex = HttpUtility.HtmlDecode(param["CodeIndex"].ToString());
-                string codePath = Path.Combine(baseConfigModel.OutputConfig.OutputWeb, "Areas", baseConfigModel.OutputConfig.OutputModule, "Views", baseConfigModel.FileConfig.ClassPrefix, baseConfigModel.FileConfig.PageIndexName + ".cshtml");
-                if (!File.Exists(codePath)) {
-                    FileHelper.CreateFile(codePath, codeIndex);
-                    result.Add(new KeyValue { Key = "列表页", Value = codePath });
-                }
-
-                // 生成菜单
-                RepositoryFactory repositoryFactory = new RepositoryFactory();
-                List<KeyValue> buttonAuthorizeList = GetButtonAuthorizeList();
-                string menuUrl = baseConfigModel.OutputConfig.OutputModule + "/" + baseConfigModel.FileConfig.ClassPrefix + "/" + baseConfigModel.FileConfig.PageIndexName;
-                string modulePrefix = GetModulePrefix(baseConfigModel);
-                string classPrefix = baseConfigModel.FileConfig.ClassPrefix.ToLower();
-                MenuEntity menuEntity = new MenuEntity {
-                    MenuName = baseConfigModel.FileConfig.ClassDescription,
-                    MenuUrl = menuUrl,
-                    MenuType = (int)MenuTypeEnum.Menu,
-                    Authorize = string.Format("{0}:{1}:{2}", modulePrefix, classPrefix, "view")
-                };
-                TData obj = await AddMenu(repositoryFactory, menuEntity);
-                if (obj.Tag == 1) {
-                    result.Add(new KeyValue { Key = "菜单(刷新页面可见)", Value = menuUrl });
-                    if (baseConfigModel.PageIndex.IsSearch == 1) {
-                        // 按钮搜索权限
-                        KeyValue button = buttonAuthorizeList.Where(p => p.Key == "btnSearch").FirstOrDefault();
-                        MenuEntity buttonEntity = new MenuEntity {
-                            ParentId = menuEntity.Id,
-                            MenuName = baseConfigModel.FileConfig.ClassDescription + button.Description,
-                            MenuType = (int)MenuTypeEnum.Button,
-                            Authorize = string.Format("{0}:{1}:{2}", modulePrefix, classPrefix, button.Value)
-                        };
-                        await AddMenu(repositoryFactory, buttonEntity);
-                    }
-                    foreach (string btn in baseConfigModel.PageIndex.ButtonList) {
-                        KeyValue button = buttonAuthorizeList.Where(p => p.Key == btn).FirstOrDefault();
-                        MenuEntity buttonEntity = new MenuEntity {
-                            ParentId = menuEntity.Id,
-                            MenuName = baseConfigModel.FileConfig.ClassDescription + button.Description,
-                            MenuType = (int)MenuTypeEnum.Button,
-                            Authorize = string.Format("{0}:{1}:{2}", modulePrefix, classPrefix, button.Value)
-                        };
-                        await AddMenu(repositoryFactory, buttonEntity);
-                    }
-                    new MenuCache().Remove();
-                }
-            }
-
-            #endregion 列表页
-
-            #region 表单页
-
-            if (!param["CodeForm"].IsEmpty()) {
-                string codeSave = HttpUtility.HtmlDecode(param["CodeForm"].ToString());
-                string codePath = Path.Combine(baseConfigModel.OutputConfig.OutputWeb, "Areas", baseConfigModel.OutputConfig.OutputModule, "Views", baseConfigModel.FileConfig.ClassPrefix, baseConfigModel.FileConfig.PageFormName + ".cshtml");
-                if (!File.Exists(codePath)) {
-                    FileHelper.CreateFile(codePath, codeSave);
-                    result.Add(new KeyValue { Key = "表单页", Value = codePath });
-                }
-            }
-
-            #endregion 表单页
-
             return result;
         }
+
+        #endregion CreateCode
     }
 
     public class BaseField {
