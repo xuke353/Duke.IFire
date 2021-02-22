@@ -22,18 +22,22 @@ namespace IFire.Data.EFCore {
         public DbSet<RoleMenu> RoleMenus { get; set; }
         public DbSet<RolePermission> RolePermissions { get; set; }
 
+        public DbSet<TableFieldInfo> TableFieldInfos { get; set; }
+
         public IFireDbContext(IIFireSession iFireSession, DbContextOptions<IFireDbContext> options) : base(options) {
             IFireSession = iFireSession;
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
+            //数据库中此表无意义
+            modelBuilder.Entity<TableFieldInfo>().HasNoKey();
             modelBuilder.Entity<Account>().HasData(new Account[]
            {
                 new Account {
                     Id = 1,
                     Name = "管理员",
                     Username = "admin",
-                    Password = "F0DD923B1DB060E4DFB4AA10CB855FBA",//a123456
+                    Password = "030BE0FE5B524BF0F833D959E5973EA2",//a123456
                     IsLock = false,
                     Deleted = false,
                     Status = AccountStatus.激活,

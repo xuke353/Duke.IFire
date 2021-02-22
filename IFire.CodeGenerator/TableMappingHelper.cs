@@ -32,7 +32,7 @@ namespace IFire.CodeGenerator {
         public static string GetClassNamePrefix(string tableName) {
             string[] arr = tableName.Split('_');
             StringBuilder sb = new StringBuilder();
-            for (int i = 1; i < arr.Length; i++) {
+            for (int i = 0; i < arr.Length; i++) {
                 sb.Append(arr[i][0].ToString().ToUpper() + arr[i].Substring(1));
             }
             return sb.ToString();

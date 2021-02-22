@@ -7,6 +7,8 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\IFire.Data\IFire.Data.csproj" />
     <ProjectReference Include="..\IFire.Framework\IFire.Framework.csproj" />
+    <ProjectReference Include="..\IFire.Model\IFire.Model.csproj" />
   </ItemGroup>
 </Project>

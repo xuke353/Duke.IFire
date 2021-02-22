@@ -36,11 +36,12 @@ namespace IFire.CodeGenerator.Model {
         public string ControllerPath { get; private set; }
 
         public OutputConfigModel(string classPrefix) {
-            var basePath = IocProvider.Current.Resolve<IWebHostEnvironment>().ContentRootPath;
+            var basePath = IocProvider.Current.Resolve<IWebHostEnvironment>().ContentRootPath.Trim('\\');
+            basePath = Directory.GetParent(basePath).FullName;
             ControllerPath = Path.Combine(basePath, "IFire.WebHost", "Controllers");
-            ServicePath = Path.Combine(basePath, "AdmBoots.Application", $"{classPrefix}s");
+            ServicePath = Path.Combine(basePath, "IFire.Application", $"{classPrefix}s");
             DtoPath = Path.Combine(ServicePath, "Dto");
-            EntityPath = Path.Combine(basePath, "AdmBoots.Model", "Model");
+            EntityPath = Path.Combine(basePath, "IFire.Model");
         }
     }
 }

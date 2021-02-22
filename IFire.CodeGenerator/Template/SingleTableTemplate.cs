@@ -6,8 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using IFire.CodeGenerator.Model;
+using IFire.Data.EFCore;
+using IFire.Data.EFCore.Helpers;
+using IFire.Framework.Attributes;
 using IFire.Framework.Extensions;
 using IFire.Framework.Helpers;
+using IFire.Model;
+using Microsoft.EntityFrameworkCore;
 
 namespace IFire.CodeGenerator.Template {
 
@@ -16,7 +21,7 @@ namespace IFire.CodeGenerator.Template {
         public FileConfigModel MapToFileConfig(InputModel inputModel) {
             var config = new FileConfigModel() {
                 TableName = inputModel.TableName,
-                ClassPrefix = TableMappingHelper.GetClassNamePrefix(inputModel.ClassPrefix.IsNull() ? inputModel.ClassPrefix : inputModel.TableName)
+                ClassPrefix = TableMappingHelper.GetClassNamePrefix(!inputModel.ClassPrefix.IsNull() ? inputModel.ClassPrefix : inputModel.TableName)
                                                 .FirstCharToUpper(),
                 Description = inputModel.Description,
                 CreatorName = inputModel.CreatorName,
@@ -30,7 +35,7 @@ namespace IFire.CodeGenerator.Template {
         public string BuildEntity(FileConfigModel fileConfigModel, DataTable dt) {
             var sb = new StringBuilder();
             sb.AppendLine("using System.ComponentModel.DataAnnotations.Schema;");
-            sb.AppendLine("using IFire.Infrastructure.Framework.Abstractions;");
+            sb.AppendLine("using IFire.Framework.Abstractions;");
             sb.AppendLine();
 
             sb.AppendLine("namespace IFire.Model");
@@ -61,7 +66,6 @@ namespace IFire.CodeGenerator.Template {
                 sb.AppendLine("        /// <summary>");
                 sb.AppendLine("        /// " + remark);
                 sb.AppendLine("        /// </summary>");
-                sb.AppendLine("        /// <returns></returns>");
 
                 switch (datatype) {
                     case "long?":
@@ -95,14 +99,14 @@ namespace IFire.CodeGenerator.Template {
         public string BuildService(FileConfigModel baseConfigModel) {
             StringBuilder sb = new StringBuilder();
             string method = string.Empty;
-            sb.AppendLine("using AdmBoots.Domain.Models;");
+            sb.AppendLine("using IFire.Model;");
             sb.AppendLine("using System.Linq.Expressions;");
             sb.AppendLine("using System.Collections.Generic;");
             sb.AppendLine("using System.Threading.Tasks;");
             sb.AppendLine($"using IFire.Application.{baseConfigModel.ClassPrefix}s.Dto;");
             sb.AppendLine("using IFire.Domain.RepositoryIntefaces;");
             sb.AppendLine("using AutoMapper;");
-            sb.AppendLine("using IFire.Infrastructure.Framework.Abstractions;");
+            sb.AppendLine("using IFire.Framework.Abstractions;");
 
             sb.AppendLine();
 
@@ -149,7 +153,7 @@ namespace IFire.CodeGenerator.Template {
             sb.AppendLine("using System.Threading.Tasks;");
             sb.AppendLine($"using IFire.Application.{baseConfigModel.ClassPrefix}s.Dto;");
             sb.AppendLine("using IFire.Domain.RepositoryIntefaces;");
-            sb.AppendLine("using IFire.Infrastructure.Framework.Abstractions;");
+            sb.AppendLine("using IFire.Framework.Abstractions;");
 
             sb.AppendLine();
 
@@ -158,7 +162,7 @@ namespace IFire.CodeGenerator.Template {
 
             SetClassDescription("服务接口", baseConfigModel, sb);
 
-            sb.AppendLine($"    public interface " + $"I{baseConfigModel.ServiceName} :ITransientDependency");
+            sb.AppendLine($"    public interface " + $"I{baseConfigModel.ServiceName}");
             sb.AppendLine("    {");
             sb.AppendLine($"        Task<Page<{baseConfigModel.DtoGetOutputName}>> Get{baseConfigModel.ClassPrefix}List({baseConfigModel.DtoGetInputName} input);");
             sb.AppendLine();
@@ -186,10 +190,8 @@ namespace IFire.CodeGenerator.Template {
             sb.AppendLine($"using IFire.Application.{classPrefix}s.Dto;");
             sb.AppendLine("using System.Threading.Tasks;");
             sb.AppendLine("using Microsoft.AspNetCore.Mvc;");
-            sb.AppendLine("using System.Web;");
-            sb.AppendLine("using Microsoft.AspNetCore.Authorization;");
-            sb.AppendLine("using IFire.Domain;");
-            sb.AppendLine("using IFire.Infrastructure.Framework.Abstractions;");
+            sb.AppendLine("using System.ComponentModel;");
+            sb.AppendLine("using IFire.Framework.Result;");
             sb.AppendLine();
 
             sb.AppendLine("namespace IFire.WebHost.Controllers");
@@ -197,11 +199,8 @@ namespace IFire.CodeGenerator.Template {
 
             SetClassDescription("控制器类", baseConfigModel, sb);
 
-            sb.AppendLine("    [ApiController]");
-            sb.AppendLine("    [ApiVersion(\"1.0\")]");
-            sb.AppendLine("    [Route(\"api/v{version:apiVersion}/" + lowerClassPrefix + "s\")]");
-            sb.AppendLine("    //[Authorize(AdmConsts.POLICY)]");
-            sb.AppendLine("    public class " + baseConfigModel.ControllerName + " : ControllerBase");
+            sb.AppendLine($"   [Description(\"{baseConfigModel.ControllerName}\")]");
+            sb.AppendLine("    public class " + baseConfigModel.ControllerName + " : IFireControllerBase");
             sb.AppendLine("    {");
             sb.AppendLine($"        private readonly I{baseConfigModel.ServiceName} _{lowerClassPrefix}Service;");
             sb.AppendLine();
@@ -211,24 +210,27 @@ namespace IFire.CodeGenerator.Template {
             sb.AppendLine("        }");
             sb.AppendLine();
             sb.AppendLine("        [HttpGet]");
-            sb.AppendLine("        public ActionResult Get" + classPrefix + "List([FromQuery]" + baseConfigModel.DtoGetInputName + " input)");
+            sb.AppendLine("        [Description(\"查询\")]");
+            sb.AppendLine("        public IResultModel Get" + classPrefix + "List([FromQuery]" + baseConfigModel.DtoGetInputName + " input)");
             sb.AppendLine("        {");
             sb.AppendLine($"            var result = _{lowerClassPrefix}Service.Get{classPrefix}List(input);");
-            sb.AppendLine($"            return Ok(ResponseBody.From(result));");
+            sb.AppendLine($"            return ResultModel.Success(result);");
             sb.AppendLine("        }");
             sb.AppendLine();
             sb.AppendLine("        [HttpPost(\"{id}\")]");
-            sb.AppendLine($"        public async Task<IActionResult> AddOrUpdate{classPrefix}(int? id, [FromBody]{baseConfigModel.DtoUpdateInputName} input)");
+            sb.AppendLine("        [Description(\"新增/修改\")]");
+            sb.AppendLine($"       public async Task<IResultModel> AddOrUpdate{classPrefix}(int? id, [FromBody]{baseConfigModel.DtoUpdateInputName} input)");
             sb.AppendLine("        {");
             sb.AppendLine($"            await _{lowerClassPrefix}Service.AddOrUpdate{classPrefix}(id, input);");
-            sb.AppendLine("            return Ok(ResponseBody.From(\"操作成功\"));");
+            sb.AppendLine("            return ResultModel.Success(\"操作成功\");");
             sb.AppendLine("        }");
             sb.AppendLine();
             sb.AppendLine("        [HttpDelete]");
-            sb.AppendLine($"        public async Task<IActionResult> Delete{classPrefix}(int[] ids) ");
+            sb.AppendLine("        [Description(\"删除\")]");
+            sb.AppendLine($"       public async Task<IResultModel> Delete{classPrefix}(int[] ids) ");
             sb.AppendLine("        {");
             sb.AppendLine($"            await _{lowerClassPrefix}Service.Delete{classPrefix}(ids);");
-            sb.AppendLine("            return Ok(ResponseBody.From(\"操作成功\"));");
+            sb.AppendLine("            return ResultModel.Success(\"操作成功\");");
             sb.AppendLine("        }");
             sb.AppendLine("    }");
             sb.AppendLine("}");
@@ -242,7 +244,7 @@ namespace IFire.CodeGenerator.Template {
         public string BuildDto(FileConfigModel baseConfigModel, string dtoName) {
             StringBuilder sb = new StringBuilder();
             if (dtoName.Contains(":"))
-                sb.AppendLine("using IFire.Infrastructure.Framework.Abstractions;");
+                sb.AppendLine("using IFire.Framework.Abstractions;");
 
             sb.AppendLine();
 
@@ -309,19 +311,21 @@ namespace IFire.CodeGenerator.Template {
 
         #region CreateCode
 
-        public List<KeyValue> CreateCode(InputModel inputModel, DataTable dt) {
+        public async Task<List<KeyValue>> CreateCode(InputModel inputModel) {
             var result = new List<KeyValue>();
             var baseConfigModel = MapToFileConfig(inputModel);
 
             #region 实体类
 
             if (inputModel.CreateEntity) {
+                var tableField = await GetTableFieldList(baseConfigModel.TableName);
+                var dt = DataTableHelper.ListToDataTable(tableField);  // 用DataTable类型，避免依赖
                 var codePath = Path.Combine(baseConfigModel.Output.EntityPath, baseConfigModel.EntityName + ".cs");
+
                 var codeEntity = BuildEntity(baseConfigModel, dt);
-                if (!File.Exists(codePath)) {
-                    FileHelper.CreateFile(codePath, codeEntity);
-                    result.Add(new KeyValue { Key = "实体类", Value = codePath });
-                }
+
+                FileHelper.CreateFile(codePath, codeEntity);
+                result.Add(new KeyValue { Key = "实体类", Value = codePath });
             }
 
             #endregion 实体类
@@ -333,14 +337,12 @@ namespace IFire.CodeGenerator.Template {
                 var codeService = BuildService(baseConfigModel);
                 var codeServicePath = Path.Combine(baseConfigModel.Output.ServicePath, baseConfigModel.ServiceName + ".cs");
                 var codeIServicePath = Path.Combine(baseConfigModel.Output.ServicePath, "I" + baseConfigModel.ServiceName + ".cs");
-                if (!File.Exists(codeServicePath)) {
-                    FileHelper.CreateFile(codeServicePath, codeService);
-                    result.Add(new KeyValue { Key = "服务类", Value = codeServicePath });
-                }
-                if (!File.Exists(codeIServicePath)) {
-                    FileHelper.CreateFile(codeIServicePath, codeService);
-                    result.Add(new KeyValue { Key = "服务接口", Value = codeIServicePath });
-                }
+
+                FileHelper.CreateFile(codeServicePath, codeService);
+                result.Add(new KeyValue { Key = "服务类", Value = codeServicePath });
+
+                FileHelper.CreateFile(codeIServicePath, codeIService);
+                result.Add(new KeyValue { Key = "服务接口", Value = codeIServicePath });
             }
 
             #endregion 服务类
@@ -350,18 +352,66 @@ namespace IFire.CodeGenerator.Template {
             if (inputModel.CreateCotroller) {
                 var codeController = BuildController(baseConfigModel);
                 var codePath = Path.Combine(baseConfigModel.Output.ControllerPath, baseConfigModel.ControllerName + ".cs");
-                if (!File.Exists(codePath)) {
-                    FileHelper.CreateFile(codePath, codeController);
-                    result.Add(new KeyValue { Key = "控制器", Value = codePath });
-                }
+                FileHelper.CreateFile(codePath, codeController);
+                result.Add(new KeyValue { Key = "控制器", Value = codePath });
             }
 
             #endregion 控制器
+
+            #region DTO
+
+            if (inputModel.CreateDto) {
+                var codeDto1 = BuildDto(baseConfigModel, baseConfigModel.DtoGetInputName + ": PageRequest");
+                var codePath1 = Path.Combine(baseConfigModel.Output.DtoPath, baseConfigModel.DtoGetInputName + ".cs");
+                FileHelper.CreateFile(codePath1, codeDto1);
+                result.Add(new KeyValue { Key = "DtoGetInput", Value = codePath1 });
+
+                var codeDto2 = BuildDto(baseConfigModel, baseConfigModel.DtoGetOutputName);
+                var codePath2 = Path.Combine(baseConfigModel.Output.DtoPath, baseConfigModel.DtoGetOutputName + ".cs");
+                FileHelper.CreateFile(codePath2, codeDto2);
+                result.Add(new KeyValue { Key = "DtoGetOutput", Value = codePath2 });
+
+                var codeDto3 = BuildDto(baseConfigModel, baseConfigModel.DtoUpdateInputName);
+                var codePath3 = Path.Combine(baseConfigModel.Output.DtoPath, baseConfigModel.DtoUpdateInputName + ".cs");
+                FileHelper.CreateFile(codePath3, codeDto3);
+                result.Add(new KeyValue { Key = "DtoUpdateInput", Value = codePath3 });
+            }
+
+            #endregion DTO
 
             return result;
         }
 
         #endregion CreateCode
+
+        public async Task<List<TableFieldInfo>> GetTableFieldList(string tableName) {
+            var strSql = new StringBuilder();
+            strSql.Append(@"SELECT COLUMN_NAME TableColumn,
+		                           DATA_TYPE Datatype,
+		                           (CASE COLUMN_KEY WHEN 'PRI' THEN COLUMN_NAME ELSE '' END) TableIdentity,
+		                           REPLACE(REPLACE(SUBSTRING(COLUMN_TYPE,LOCATE('(',COLUMN_TYPE)),'(',''),')','') FieldLength,
+	                               (CASE IS_NULLABLE WHEN 'NO' THEN 'N' ELSE 'Y' END) IsNullable,
+                                   IFNULL(COLUMN_DEFAULT,'') FieldDefault,
+                                   COLUMN_COMMENT Remark
+                             FROM information_schema.columns WHERE table_schema='" + GetDatabase() + "' AND table_name='" + tableName + "'");
+
+            var list = SqlHelper.Query<TableFieldInfo>(strSql.ToString());
+            return await list.ToListAsync();
+        }
+
+        private static string GetDatabase() {
+            var connectionString = DbOptions.ConnectionString;
+            var prefix = "Database=";
+            var subfix = ";";
+            var inl = connectionString.IndexOf(prefix);
+            if (inl == -1) {
+                return null;
+            }
+            inl += prefix.Length;
+            var inl2 = connectionString.IndexOf(subfix, inl);
+            var database = connectionString.Substring(inl, inl2 - inl);
+            return database;
+        }
     }
 
     public class BaseField {
