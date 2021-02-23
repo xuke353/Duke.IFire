@@ -16,14 +16,16 @@ namespace IFire.WebHost.Controllers {
     [Route("api/v{version:apiVersion}/[controller]/[action]")]
     [Description("代码生成器")]
     public class CodeGeneratorController : ControllerBase {
+        private readonly SingleTableTemplate _template;
 
-        public CodeGeneratorController() {
+        public CodeGeneratorController(SingleTableTemplate template) {
+            _template = template;
         }
 
         [HttpPost]
         public async Task<IActionResult> CodeGenerate([FromQuery] InputModel input) {
-            var template = new SingleTableTemplate();
-            var result = await template.CreateCode(input);
+            //var template = new SingleTableTemplate();
+            var result = await _template.CreateCode(input);
             return Ok(result);
         }
     }

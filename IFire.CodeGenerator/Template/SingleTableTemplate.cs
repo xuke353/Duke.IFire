@@ -16,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IFire.CodeGenerator.Template {
 
+    [Transient]
     public class SingleTableTemplate {
 
         public FileConfigModel MapToFileConfig(InputModel inputModel) {
